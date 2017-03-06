@@ -24,11 +24,12 @@ namespace RandomTF2Loadout.General
 		{
 			string path = string.Format("{0}\\config.cfg", getBaseDirectory());
 			Match m;
-			if (RegexFunctions.matches(path, string.Format(@"{0}=(.+)",key), out m))
+			if (RegexFunctions.matches(File.ReadAllText(path), string.Format(@"{0}=(.+)",key), out m))
 			{
 				try
 				{
 					string newPath = Path.GetFullPath(Path.Combine(path, m.Groups[1].Value));
+					return newPath;
 				}
 				catch (Exception e)
 				{
