@@ -1,0 +1,1 @@
+start RTF2L-Backend\RandomTF2Loadout\bin\Release\RandomTF2Loadout.exe

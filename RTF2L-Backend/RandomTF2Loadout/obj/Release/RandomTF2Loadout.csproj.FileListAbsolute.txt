@@ -1,0 +1,23 @@
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Release\RandomTF2Loadout.exe.config
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Release\RandomTF2Loadout.exe
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Release\RandomTF2Loadout.pdb
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Release\HtmlAgilityPack.dll
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Release\MimeTypeMap.dll
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Release\Newtonsoft.Json.dll
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Release\HtmlAgilityPack.pdb
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Release\HtmlAgilityPack.xml
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Release\Newtonsoft.Json.xml
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\obj\Release\RandomTF2Loadout.exe
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\obj\Release\RandomTF2Loadout.pdb
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\obj\Release\RandomTF2Loadout.csprojResolveAssemblyReference.cache
+C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Release\RandomTF2Loadout.exe.config
+C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Release\RandomTF2Loadout.exe
+C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Release\RandomTF2Loadout.pdb
+C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Release\RandomTF2Loadout.exe
+C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Release\RandomTF2Loadout.pdb
+C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Release\HtmlAgilityPack.dll
+C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Release\MimeTypeMap.dll
+C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Release\Newtonsoft.Json.dll
+C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Release\HtmlAgilityPack.pdb
+C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Release\HtmlAgilityPack.xml
+C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Release\Newtonsoft.Json.xml
