@@ -13,13 +13,13 @@ namespace RandomTF2Loadout.Steam_Interface
 		{
 			get
 			{
-				if (File.Exists(string.Format(@"{0}\config.cfg",General.GeneralFunctions.getBaseDirectory())))
+				try
 				{
-					//TODO: make this shit work.
-					return "fuck off faggot";
+					return File.ReadAllText(General.GeneralFunctions.ParseConfigFile("SteamKeyLocation"));
 				}
-				else
+				catch (Exception)
 				{
+					Console.WriteLine("Error, couldn't find steam key location.");
 					return null;
 				}
 			}

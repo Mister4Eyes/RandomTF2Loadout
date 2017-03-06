@@ -42,7 +42,7 @@ namespace RandomTF2Loadout
 
 		public byte[] BaseSite(HttpListenerContext hlc)
 		{
-			FileInfo fzf = new FileInfo(string.Format(@"{0}\base.html", General.GeneralFunctions.getBaseDirectory()));
+			FileInfo fzf = new FileInfo(string.Format(@"{0}\base.html", General.GeneralFunctions.getClientDirectory()));
 			hlc.Response.StatusCode = 200;
 			hlc.Response.ContentType = "text/html";
 			hlc.Response.ContentEncoding = Encoding.UTF8;
@@ -55,7 +55,7 @@ namespace RandomTF2Loadout
 
 		public byte[] FourZeroFour(HttpListenerContext hlc)
 		{
-			FileInfo fzf = new FileInfo(string.Format(@"{0}\404.html",General.GeneralFunctions.getBaseDirectory()));
+			FileInfo fzf = new FileInfo(string.Format(@"{0}\404.html",General.GeneralFunctions.getClientDirectory()));
 
 			//The list of response codes
 			hlc.Response.StatusCode = 404;
