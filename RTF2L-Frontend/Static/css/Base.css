@@ -7,9 +7,19 @@
 	background-color:#282828;
 }
 @font-face {
-	font-family: TF2;
-	src: url('C:/Users/Buildexboy/Desktop/TF2 loadout/Static/font/tf2build.tff');
+	font-family: tf2build;
+	src: url('../font/tf2build.ttf');
 }
-body{
-	font-family:TF2;
+.body{
+	font-family:tf2build;
+}
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+	cursor: default;
 }
