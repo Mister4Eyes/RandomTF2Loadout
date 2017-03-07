@@ -10,6 +10,7 @@ using RandomTF2Loadout.WebServer;
 using System.Net;
 using MimeTypes;
 using RandomTF2Loadout.Steam_Interface;
+using System.Threading;
 
 namespace RandomTF2Loadout
 {
@@ -100,13 +101,32 @@ namespace RandomTF2Loadout
 		{
 			string customSteamName = "Mister_4_Eyes";
 			string steamID64 = UserURLToSteamID64.parseSteamID64(customSteamName);
-			InventoryRootObject inventory = SteamInventory.GetInventory(steamID64);
+			Item[] items = WeaponGather.RemoveReskins(WeaponGather.getWeapons());
+
+			foreach(Item i in items)
+			{
+				Console.Write("Name:{0}\nSlot:{1}\nUsed by ",i.name,i.item_slot);
+				if(i.used_by_classes == null)
+				{
+					continue;
+				}
+				foreach(object v in i.used_by_classes)
+				{
+					Console.Write("{0},", v.ToString());
+				}
+				Console.Write("\b \n\n");
+
+				Thread.Sleep(250);
+			}
+
+			Console.WriteLine("Total length:{0}",items.Length);
+			Console.ReadKey(true);
 		}
 		//*/
 		//*
 		public void Start()
 		{
-			WebServer.WebServer ws = new WebServer.WebServer(new[] { "http://localhost:8080/" }, HttpFunction);
+			WebServer.WebServer ws = new WebServer.WebServer(new[] { "http://localhost:9090/","http://192.168.1.8:9090/" }, HttpFunction);
 			ws.Run();
 			Console.WriteLine("Press any key to stop.");
 			Console.ReadKey(true);

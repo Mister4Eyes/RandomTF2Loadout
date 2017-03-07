@@ -17,7 +17,7 @@ namespace RandomTF2Loadout.General
 		}
 		public static string getClientDirectory()
 		{
-			return ParseConfigFile("ClientDirectory");
+			return Path.Combine(getBaseDirectory(), ParseConfigFile("ClientDirectory"));
 		}
 
 		public static string ParseConfigFile(string key)
@@ -28,8 +28,7 @@ namespace RandomTF2Loadout.General
 			{
 				try
 				{
-					string newPath = Path.GetFullPath(Path.Combine(path, m.Groups[1].Value));
-					return newPath;
+					return m.Groups[1].Value.Trim();
 				}
 				catch (Exception e)
 				{
