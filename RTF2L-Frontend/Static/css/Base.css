@@ -23,3 +23,16 @@
                                   supported by Chrome and Opera */
 	cursor: default;
 }
+#header{
+	background-color:#E2E1E1;
+}
+
+#body{
+	background-color:#CFCAC5;
+}
+.btn{
+	background-color:#A5A19D;
+}
+#background{
+	background-color:#A5A19D;
+}
