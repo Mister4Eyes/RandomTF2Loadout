@@ -12,29 +12,13 @@
 
 		<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-		<script>
-		function myFunction() {
-			location.reload();
-		}
-		function PlaySound() {
-			  var sound = document.getElementById("audio");
-			  sound.play()
-			  sound.volume = 0.2;
-		}
-		function pictureChange()
-		{
-			document.getElementById('theImage').src="https://s-media-cache-ak0.pinimg.com/originals/66/24/e1/6624e12a74dbc8c5cc07f7bcfad2f1f3.jpg";
-			var sound = document.getElementById("audio");
-			sound.play()
-			sound.volume = 0.2;
-		}
-		</script>	
+		<script src="js/base.js"></script>	
 	</head>
 	<body id="pageContainer" class="body">
 		
 		<div class="col-sm-2">
 			<audio id="audio" src="audio/Cheeki_Breeki_Hardbass_Anthem.mp3" autostart="false" ></audio>
-			<h1 onclick="PlaySound()" style="color:#282828;" class="noselect">Play</h1>
+			<h1 onclick="playSound(); pauseSecret(); pauseAnthem();" style="color:#282828;" class="noselect">Play</h1>
 		</div>
 		<div class="panel panel-primary col-sm-8" align="center">
 			<h1>Random TF2 Loadouts</h1>
@@ -42,12 +26,13 @@
 				<!--<a href="">
 					<button class="btn btn-info btn-lg">CHEEKI BREEKI</button>
 				</a>-->		
-				<a href="https://www.google.com/search?rlz=1C1CHBF_enUS728US728&biw=1920&bih=901&tbm=isch&sa=1&q=furries&oq=furries&gs_l=img.3..0l10.371775.372940.0.374076.7.7.0.0.0.0.202.625.4j1j1.6.0....0...1c.1.64.img..1.6.621...35i39k1j0i67k1.g-oIoAZygDU">
-					<button class="btn btn-info btn-lg">Furries</button>
+				<a href="http://i.imgur.com/wKmhJbz.jpg" target="_blank">
+					<audio id="anthem" src="audio/anthem.mp3" autostart="false" ></audio>
+					<button class="btn btn-info btn-lg" onclick="playAnthem(); pauseSound(); pauseSecret();">Furries</button>
 				</a>
-				<button class="btn btn-info btn-lg" onClick="myFunction()">Refresh</button>
-				
-				<button class="btn btn-info btn-lg" onclick="pictureChange()">ASS</button>
+				<button class="btn btn-info btn-lg" onclick="reload()">Refresh</button>
+				<audio id="secret" src="audio/secret.mp3" autostart="false" ></audio>
+				<button class="btn btn-info btn-lg" onclick="pictureChange(); pauseSound(); pauseAnthem();">Secret?</button>
 			</div>
 			
 			<hr>
@@ -55,8 +40,8 @@
 			<div align="center" class="panel panel-body">
 				<!-- Gui? goes here --->
 				<h1>CONTENT GOES HERE</h1>
-				<img src="http://cdn.mos.cms.futurecdn.net/12b3163555c670c239abcd31455e3a00.png" />
-				<!--<img id="theImage" src="http://cdn.mos.cms.futurecdn.net/12b3163555c670c239abcd31455e3a00.png" class="img-responsive center-block"/>-->
+				<!--<img src="http://cdn.mos.cms.futurecdn.net/12b3163555c670c239abcd31455e3a00.png" />-->
+				<img id="theImage" src="http://cdn.mos.cms.futurecdn.net/12b3163555c670c239abcd31455e3a00.png" class="img-responsive center-block"/>
 			</div>
 		</div>
 		<div class="col-sm-2"></div>
