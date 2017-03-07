@@ -8,7 +8,7 @@
 }
 @font-face {
 	font-family: tf2build;
-	src: url('../font/tf2build.ttf');
+	src: url('../fonts/tf2build.ttf');
 }
 .body{
 	font-family:tf2build;
@@ -22,4 +22,17 @@
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 	cursor: default;
+}
+#header{
+	background-color:#E2E1E1;
+}
+
+#body{
+	background-color:#CFCAC5;
+}
+.btn{
+	background-color:#A5A19D;
+}
+#background{
+	background-color:#A5A19D;
 }
