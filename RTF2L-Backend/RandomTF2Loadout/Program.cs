@@ -11,21 +11,86 @@ using System.Net;
 using MimeTypes;
 using RandomTF2Loadout.Steam_Interface;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace RandomTF2Loadout
 {
 	class Program
 	{
 		static void Main(string[] args) => new Program().Start();
-		
+		bool DevMode = false;
+		string BaseDirectory;
+		string ClientDirectory;
+
+
+
+		public string FormatWebpage(string str)
+		{
+			//Doubles up the {} so the formatter dosen't get confused
+			str = str.Replace("{", "{{").Replace("}", "}}");
+
+			{
+				Dictionary<string, Func<string, string>> dict = new Dictionary<string, Func<string, string>>() {/*TODO: add Code function pairs*/};
+
+				foreach(string code in dict.Keys)
+				{
+					//Checks if the code is there
+					if (str.Contains("{{"+code+"}}"))
+					{
+						str = str.Replace("{{"+code+"}}", "{0}");
+						str = string.Format(str, dict[code](code).Replace("}", "}}"));
+					}
+				}
+
+				Match staticFormat = Regex.Match(str, @"{{([\w\d-]+)}}");
+
+				//Goes through any static moduels
+				while (staticFormat.Success)
+				{
+					string data;
+					if(TryGetModuel(staticFormat.Groups[1].Value, out data))
+					{
+						str = str.Replace(staticFormat.Value, "{0}");
+						str = string.Format(str, FormatWebpage(data).Replace("}", "}}"));
+					}
+					
+					staticFormat = staticFormat.NextMatch();
+				}
+			}
+
+			//Returns them to their origional form
+			str = str.Replace("{{", "{").Replace("}}", "}");
+			return str;
+		}
+
+		public bool TryGetModuel(string path, out string data)
+		{
+			DirectoryInfo moduelsDirectory = new DirectoryInfo(string.Format("{0}moduels", ClientDirectory));
+
+			//Checks if there is a moduel directory
+			if (moduelsDirectory.Exists)
+			{
+				FileInfo moduelFile = new FileInfo(string.Format(@"{0}moduels\{1}.html", ClientDirectory, path));
+
+				if (moduelFile.Exists)
+				{
+					data = FormatWebpage(File.ReadAllText(moduelFile.FullName));
+					return true;
+				}
+			}
+
+			data = null;
+			return false;
+		}
+
 		public bool TryGetStatic(HttpListenerContext hlc, out byte[] data)
 		{
-			DirectoryInfo staticDirectory = new DirectoryInfo(General.GeneralFunctions.getClientDirectory() + @"static");
+			DirectoryInfo staticDirectory = new DirectoryInfo(ClientDirectory + @"static");
 
 			//Checks if there is a static directory
 			if (staticDirectory.Exists)
 			{
-				FileInfo urlFile = new FileInfo(string.Format(@"{0}static{1}", General.GeneralFunctions.getClientDirectory(), hlc.Request.Url.AbsolutePath));
+				FileInfo urlFile = new FileInfo(string.Format(@"{0}static{1}", ClientDirectory, hlc.Request.Url.AbsolutePath));
 
 				//Checks if file exists
 				if (urlFile.Exists)
@@ -33,30 +98,40 @@ namespace RandomTF2Loadout
 					hlc.Response.StatusCode = 200;
 					hlc.Response.ContentType = MimeTypeMap.GetMimeType(urlFile.Extension);
 					hlc.Response.ContentEncoding = Encoding.UTF8;
-					data = File.ReadAllBytes(urlFile.FullName);
+
+					if (urlFile.Extension.Equals(".html"))
+					{
+						data = Encoding.UTF8.GetBytes(FormatWebpage(File.ReadAllText(urlFile.FullName)));
+					}
+					else
+					{
+						data = File.ReadAllBytes(urlFile.FullName);
+					}
 					return true;
 				}
 			}
+
 			data = null;
 			return false;
 		}
 
 		public byte[] BaseSite(HttpListenerContext hlc)
 		{
-			FileInfo fzf = new FileInfo(string.Format(@"{0}base.html", General.GeneralFunctions.getClientDirectory()));
+			FileInfo fzf = new FileInfo(string.Format(@"{0}base.html", ClientDirectory));
 			hlc.Response.StatusCode = 200;
 			hlc.Response.ContentType = "text/html";
 			hlc.Response.ContentEncoding = Encoding.UTF8;
+
 			if (fzf.Exists)
 			{
-				return File.ReadAllBytes(fzf.FullName);
+				return Encoding.UTF8.GetBytes(FormatWebpage(File.ReadAllText(fzf.FullName)));
 			}
 			return FourZeroFour(hlc);
 		}
 
 		public byte[] FourZeroFour(HttpListenerContext hlc)
 		{
-			FileInfo fzf = new FileInfo(string.Format(@"{0}404.html",General.GeneralFunctions.getClientDirectory()));
+			FileInfo fzf = new FileInfo(string.Format(@"{0}404.html", ClientDirectory));
 
 			//The list of response codes
 			hlc.Response.StatusCode = 404;
@@ -86,9 +161,14 @@ namespace RandomTF2Loadout
 					//Defaults to static data
 				default:
 					byte[] data;
+					string modDat;
 					if(TryGetStatic(hlc, out data))
 					{
 						return data;
+					}
+					else if(DevMode && TryGetModuel(url, out modDat))
+					{
+						return Encoding.UTF8.GetBytes(modDat);
 					}
 					else
 					{
@@ -126,6 +206,15 @@ namespace RandomTF2Loadout
 		//*
 		public void Start()
 		{
+			bool.TryParse(General.GeneralFunctions.ParseConfigFile("DevMode"), out DevMode);
+
+			BaseDirectory = General.GeneralFunctions.getBaseDirectory();
+			ClientDirectory = General.GeneralFunctions.getClientDirectory();
+			if (DevMode)
+			{
+				Console.WriteLine("Development mode engaged.");
+			}
+
 			WebServer.WebServer ws = new WebServer.WebServer(new[] { "http://localhost:9090/","http://192.168.1.8:9090/" }, HttpFunction);
 			ws.Run();
 			Console.WriteLine("Press any key to stop.");
