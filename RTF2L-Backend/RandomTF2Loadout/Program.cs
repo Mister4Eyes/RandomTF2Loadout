@@ -21,28 +21,102 @@ namespace RandomTF2Loadout
 		bool DevMode = false;
 		string BaseDirectory;
 		string ClientDirectory;
+		Random r = new Random();
 
-		public string ItemView(string str)
+		Dictionary<string, List<Item>> generalClassItems = InitializeDictonary();
+
+		public static Dictionary<string, List<Item>> InitializeDictonary()
 		{
-			//TODO: Make this shit work
+			return new Dictionary<string, List<Item>>()
+		{
+			{"scout",	new List<Item>() },
+			{"soldier",	new List<Item>() },
+			{"pyro",	new List<Item>() },
+			{"demoman",	new List<Item>() },
+			{"heavy",	new List<Item>() },
+			{"engineer",new List<Item>() },
+			{"medic",	new List<Item>() },
+			{"sniper",	new List<Item>() },
+			{"spy",		new List<Item>() }
+		};
 
-			return string.Format(File.ReadAllText(string.Format(@"{0}Moduels\Item.html",ClientDirectory)),str);
+		}
+		public string getWeponName(string str)
+		{
+			//TODO: add in method that fixes the TF_WEAPONS
+			return str;
+		}
+		//Seperates weapons from classes
+		public List<Item> getClassItems(string pickedClass)
+		{
+			List<Item> classItm = new List<Item>();
+			foreach(Item itm in generalClassItems[pickedClass])
+			{
+				//Loops through classes
+				foreach(string usedClass in itm.used_by_classes)
+				{
+					if (usedClass.Equals(pickedClass))
+					{
+						classItm.Add(itm);
+						break;
+					}
+				}
+			}
+
+			return classItm;
 		}
 
+		public string ItemView(string str, string pickedClass)
+		{
+			//TODO: Make this shit work
+			List<Item> picked = getClassItems(pickedClass);
+			List<Item> prune = new List<Item>();
+			foreach (Item itm in picked)
+			{
+				if (itm.item_slot.Equals(str))
+				{
+					prune.Add(itm);
+				}
+			}
+			Item select = prune[r.Next(prune.Count)];
+			return string.Format(File.ReadAllText(string.Format(@"{0}Moduels\Item.html", ClientDirectory)), select.image_url, getWeponName(select.item_name));
+		}
+
+		public string FormatItemView(string str, string pickedClass)
+		{
+			//TODO: Make this shit work
+			
+			return string.Format(File.ReadAllText(string.Format(@"{0}Moduels\ItemView.html", ClientDirectory)), string.Format("img/{0}",str), str);
+		}
 		public string FormatWebpage(string str)
 		{
 			//Doubles up the {} so the formatter dosen't get confused
 			str = str.Replace("{", "{{").Replace("}", "}}");
-
+			
 			{
-				Dictionary<string, Func<string, string>> dict = new Dictionary<string, Func<string, string>>()
+				string[] classes = new string[]
 				{
-					{ "primary", ItemView },
-					{ "secondary", ItemView },
-					{ "melee", ItemView },
-					{ "pda", ItemView } ,
-					{ "pda2", ItemView } ,
-					{ "building", ItemView }
+					"scout",
+					"soldier",
+					"pyro",
+					"demoman",
+					"heavy",
+					"engineer",
+					"medic",
+					"sniper",
+					"spy"
+				};
+
+				string selectClass = classes[r.Next(classes.Length)];
+				Dictionary<string, Func<string, string, string>> dict = new Dictionary<string, Func<string, string, string>>()
+				{
+					{ "primary",	ItemView },
+					{ "secondary",	ItemView },
+					{ "melee",		ItemView },
+					{ "pda",		ItemView },
+					{ "pda2",		ItemView },
+					{ "building",	ItemView },
+					{"ItemView",	FormatItemView}
 				};
 
 				foreach(string code in dict.Keys)
@@ -51,7 +125,7 @@ namespace RandomTF2Loadout
 					if (str.Contains("{{"+code+"}}"))
 					{
 						str = str.Replace("{{"+code+"}}", "{0}");
-						str = string.Format(str, dict[code](code)).Replace("{", "{{").Replace("}", "}}");
+						str = string.Format(str, dict[code](code, selectClass)).Replace("{", "{{").Replace("}", "}}");
 					}
 				}
 
@@ -222,6 +296,15 @@ namespace RandomTF2Loadout
 			if (DevMode)
 			{
 				Console.WriteLine("Development mode engaged.");
+			}
+
+			Console.WriteLine("Getting base weapons.");
+			foreach(Item i in WeaponGather.RemoveReskins(WeaponGather.getWeapons()))
+			{
+				foreach(string str in i.used_by_classes)
+				{
+					generalClassItems[str].Add(i);
+				}
 			}
 
 			WebServer.WebServer ws = new WebServer.WebServer(new[] { "http://localhost:9090/","http://192.168.1.8:9090/" }, HttpFunction);
