@@ -70,7 +70,7 @@ namespace RandomTF2Loadout
 			//Checks if there is a moduel directory
 			if (moduelsDirectory.Exists)
 			{
-				FileInfo moduelFile = new FileInfo(string.Format(@"{0}moduels\{1}.html", ClientDirectory, path));
+				FileInfo moduelFile = new FileInfo(string.Format(@"{0}Moduels\{1}.html", ClientDirectory, path));
 
 				if (moduelFile.Exists)
 				{
