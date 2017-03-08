@@ -46,9 +46,18 @@
 #weapons{
 	height:128px;
 	width: 128px;
+	float:left;
+	position: relative;
+	top: 10px;
 }
 .loadout{
 	float:left;
+	margin-left: 10px;
+	text-align:center;
+}
+.character{
+	float: right;
+	margin-right: 10px;
 }
 footer{
 	height:60px;
