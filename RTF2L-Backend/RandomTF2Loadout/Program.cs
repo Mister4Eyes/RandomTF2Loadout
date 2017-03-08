@@ -224,7 +224,7 @@ namespace RandomTF2Loadout
 				Console.WriteLine("Development mode engaged.");
 			}
 
-			WebServer.WebServer ws = new WebServer.WebServer(new[] { "http://localhost:9090/","http://192.168.1.8:9090/" }, HttpFunction);
+			WebServer.WebServer ws = new WebServer.WebServer(new[] { "http://localhost:9090/",/*"http://192.168.1.8:9090/"*/ }, HttpFunction);
 			ws.Run();
 			Console.WriteLine("Press any key to stop.");
 			Console.ReadKey(true);
