@@ -29,15 +29,15 @@ namespace RandomTF2Loadout
 		{
 			return new Dictionary<string, List<Item>>()
 		{
-			{"scout",	new List<Item>() },
-			{"soldier",	new List<Item>() },
-			{"pyro",	new List<Item>() },
-			{"demoman",	new List<Item>() },
-			{"heavy",	new List<Item>() },
-			{"engineer",new List<Item>() },
-			{"medic",	new List<Item>() },
-			{"sniper",	new List<Item>() },
-			{"spy",		new List<Item>() }
+			{"Scout",	new List<Item>() },
+			{"Soldier",	new List<Item>() },
+			{"Pyro",	new List<Item>() },
+			{"Demoman",	new List<Item>() },
+			{"Heavy",	new List<Item>() },
+			{"Engineer",new List<Item>() },
+			{"Medic",	new List<Item>() },
+			{"Sniper",	new List<Item>() },
+			{"Spy",		new List<Item>() }
 		};
 
 		}
@@ -68,7 +68,6 @@ namespace RandomTF2Loadout
 
 		public string ItemView(string str, string pickedClass)
 		{
-			//TODO: Make this shit work
 			List<Item> picked = getClassItems(pickedClass);
 			List<Item> prune = new List<Item>();
 			foreach (Item itm in picked)
@@ -78,53 +77,71 @@ namespace RandomTF2Loadout
 					prune.Add(itm);
 				}
 			}
+			if(prune.Count == 0)
+			{
+				return "";
+			}
+			//Gets random pruned item
 			Item select = prune[r.Next(prune.Count)];
-			return string.Format(File.ReadAllText(string.Format(@"{0}Moduels\Item.html", ClientDirectory)), select.image_url, getWeponName(select.item_name));
+			return string.Format(File.ReadAllText(string.Format(@"{0}Moduels\Item.html", ClientDirectory)), select.image_url, getWeponName(select.name));
 		}
 
 		public string FormatItemView(string str, string pickedClass)
 		{
-			//TODO: Make this shit work
-			
-			return string.Format(File.ReadAllText(string.Format(@"{0}Moduels\ItemView.html", ClientDirectory)), string.Format("img/{0}",str), str);
+			try
+			{
+				string imgDirectory = string.Format("img/{0}.png", pickedClass);
+				string fileText = File.ReadAllText(string.Format(@"{0}Moduels\ItemView.html", ClientDirectory)).Replace("{","{{").Replace("}","}}").Replace("{{0}}","{0}").Replace("{{1}}","{1}");
+				return FormatWebpage(string.Format(fileText, imgDirectory, pickedClass).Replace("{{","{").Replace("}}","}"), pickedClass);
+			}
+			catch(Exception e)
+			{
+				Console.WriteLine(e.Message);
+				return "";
+			}
 		}
 		public string FormatWebpage(string str)
 		{
+
+			string[] classes = new string[]
+			{
+					"Scout"		,
+					"Soldier"	,
+					"Pyro"		,
+					"Demoman"	,
+					"Heavy"		,
+					"Engineer"	,
+					"Medic"		,
+					"Sniper"	,
+					"Spy"
+			};
+
+			string selectClass = classes[r.Next(classes.Length)];
+			return FormatWebpage(str, selectClass);
+		}
+		public string FormatWebpage(string str, string selectClass)
+		{
 			//Doubles up the {} so the formatter dosen't get confused
 			str = str.Replace("{", "{{").Replace("}", "}}");
-			
-			{
-				string[] classes = new string[]
-				{
-					"scout",
-					"soldier",
-					"pyro",
-					"demoman",
-					"heavy",
-					"engineer",
-					"medic",
-					"sniper",
-					"spy"
-				};
 
-				string selectClass = classes[r.Next(classes.Length)];
+			{
 				Dictionary<string, Func<string, string, string>> dict = new Dictionary<string, Func<string, string, string>>()
 				{
-					{ "primary",	ItemView },
-					{ "secondary",	ItemView },
-					{ "melee",		ItemView },
-					{ "pda",		ItemView },
-					{ "pda2",		ItemView },
-					{ "building",	ItemView },
-					{"ItemView",	FormatItemView}
+					{ "primary",	ItemView		},
+					{ "secondary",	ItemView		},
+					{ "melee",		ItemView		},
+					{ "pda",		ItemView		},
+					{ "pda2",		ItemView		},
+					{ "building",	ItemView		},
+					{"ItemView",	FormatItemView	}
 				};
 
-				foreach(string code in dict.Keys)
+				foreach (string code in dict.Keys)
 				{
 					//Checks if the code is there
-					if (str.Contains("{{"+code+"}}"))
+					if (str.Contains("{{" + code + "}}"))
 					{
-						str = str.Replace("{{"+code+"}}", "{0}");
+						str = str.Replace("{{" + code + "}}", "{0}");
 						str = string.Format(str, dict[code](code, selectClass)).Replace("{", "{{").Replace("}", "}}");
 					}
 				}
@@ -135,12 +152,12 @@ namespace RandomTF2Loadout
 				while (staticFormat.Success)
 				{
 					string data;
-					if(TryGetModuel(staticFormat.Groups[1].Value, out data))
+					if (TryGetModuel(staticFormat.Groups[1].Value, out data))
 					{
 						str = str.Replace(staticFormat.Value, "{0}");
-						str = string.Format(str, FormatWebpage(data).Replace("}", "}}"));
+						str = string.Format(str, FormatWebpage(data, selectClass).Replace("}", "}}").Replace("{", "{{"));
 					}
-					
+
 					staticFormat = staticFormat.NextMatch();
 				}
 			}
@@ -307,7 +324,7 @@ namespace RandomTF2Loadout
 				}
 			}
 
-			WebServer.WebServer ws = new WebServer.WebServer(new[] { "http://localhost:9090/","http://192.168.1.8:9090/" }, HttpFunction);
+			WebServer.WebServer ws = new WebServer.WebServer(new[] { "http://localhost:9090/" }, HttpFunction);
 			ws.Run();
 			Console.WriteLine("Press any key to stop.");
 			Console.ReadKey(true);
