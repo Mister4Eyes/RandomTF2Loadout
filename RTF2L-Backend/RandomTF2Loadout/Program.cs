@@ -22,7 +22,12 @@ namespace RandomTF2Loadout
 		string BaseDirectory;
 		string ClientDirectory;
 
+		public string ItemView(string str)
+		{
+			//TODO: Make this shit work
 
+			return string.Format(File.ReadAllText(string.Format(@"{0}Moduels\Item.html",ClientDirectory)),str);
+		}
 
 		public string FormatWebpage(string str)
 		{
@@ -30,7 +35,15 @@ namespace RandomTF2Loadout
 			str = str.Replace("{", "{{").Replace("}", "}}");
 
 			{
-				Dictionary<string, Func<string, string>> dict = new Dictionary<string, Func<string, string>>() {/*TODO: add Code function pairs*/};
+				Dictionary<string, Func<string, string>> dict = new Dictionary<string, Func<string, string>>()
+				{
+					{ "primary", ItemView },
+					{ "secondary", ItemView },
+					{ "melee", ItemView },
+					{ "pda", ItemView } ,
+					{ "pda2", ItemView } ,
+					{ "building", ItemView }
+				};
 
 				foreach(string code in dict.Keys)
 				{
@@ -38,7 +51,7 @@ namespace RandomTF2Loadout
 					if (str.Contains("{{"+code+"}}"))
 					{
 						str = str.Replace("{{"+code+"}}", "{0}");
-						str = string.Format(str, dict[code](code).Replace("}", "}}"));
+						str = string.Format(str, dict[code](code)).Replace("{", "{{").Replace("}", "}}");
 					}
 				}
 
@@ -183,22 +196,18 @@ namespace RandomTF2Loadout
 			string steamID64 = UserURLToSteamID64.parseSteamID64(customSteamName);
 			Item[] items = WeaponGather.RemoveReskins(WeaponGather.getWeapons());
 
+			List<string> bla = new List<string>();
 			foreach(Item i in items)
 			{
-				Console.Write("Name:{0}\nSlot:{1}\nUsed by ",i.name,i.item_slot);
-				if(i.used_by_classes == null)
+				if (!bla.Contains(i.item_slot))
 				{
-					continue;
+					bla.Add(i.item_slot);
 				}
-				foreach(object v in i.used_by_classes)
-				{
-					Console.Write("{0},", v.ToString());
-				}
-				Console.Write("\b \n\n");
-
-				Thread.Sleep(250);
 			}
-
+			foreach(string str in bla)
+			{
+				Console.WriteLine(str);
+			}
 			Console.WriteLine("Total length:{0}",items.Length);
 			Console.ReadKey(true);
 		}
