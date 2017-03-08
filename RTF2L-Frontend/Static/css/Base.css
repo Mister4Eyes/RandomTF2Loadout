@@ -55,13 +55,9 @@ footer{
 	line-height: 90px;
 	background-color:#CFCAC5;
 	text-align:center;
-	border: 2px solid red;
 }
 span {
   display: inline-block;
   vertical-align: middle;
   line-height: normal;
-}
-#side{
-	background:url("https://d13yacurqjgara.cloudfront.net/users/497127/screenshots/2309639/404-planet.gif");
 }
