@@ -12,6 +12,8 @@
 }
 .body{
 	font-family:tf2build;
+	overflow:auto;
+	
 }
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
@@ -39,4 +41,13 @@
 #theImage{
 	height:50%;
 	width: 50%;
+}
+
+#weapons{
+	height:128px;
+	width: 128px;
+}
+.loadout{
+	float:left;
+
 }
