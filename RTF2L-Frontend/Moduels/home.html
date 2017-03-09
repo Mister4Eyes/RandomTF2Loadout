@@ -22,17 +22,26 @@
 		<div align="center" class="panel panel-body" id="body">
 			<!-- Gui? goes here --->
 			<div>
-				<form>
+				<form class="form-horizontal">
 					<div class="form-group">
-						<label for="formGroupExampleInput">Example label</label>
-						<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
+						<label class="control-label col-sm-2" for="pwd">Steam ID:</label>
+						<div class="col-sm-10">          
+							<input type="text" class="form-control" id="pwd" placeholder="Enter SteamID">
+						</div>
 					</div>
-					<div class="form-group">
-						<label for="formGroupExampleInput2">Another label</label>
-						<input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input">
+					<div class="form-group">        
+						<div class="col-sm-offset-2 col-sm-10">
+							<div class="checkbox">
+								<label><input type="checkbox"> Remember me</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">        
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="submit" class="btn btn-primary btn-lg">Submit</button>
+						</div>
 					</div>
 				</form>
-				 <button type="submit" class="btn btn-primary btn-lg">Submit</button> 
 			</div>
 			<br>
 			<h1>Your Loadout</h1>
