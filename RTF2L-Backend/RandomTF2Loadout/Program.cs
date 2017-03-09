@@ -43,8 +43,42 @@ namespace RandomTF2Loadout
 		}
 		public string getWeponName(string str)
 		{
-			//TODO: add in method that fixes the TF_WEAPONS
-			return str;
+			string rep = str.Replace("TF_WEAPON_", "");
+
+			switch (rep)
+			{
+				//Special cases where formatting is off
+				case "PDA_SPY":
+					return "PDA";
+				case "GRENADELAUNCHER":
+					return "GRENADE LAUNCHER";
+				case "SHOTGUN_HWG":
+					return "SHOTGUN";
+				case "INVIS":
+					return "INVIS WATCH";
+				case "PDA_ENGINEER_BUILD":
+					return "PDA";
+				case "BUILDER_SPY":
+					return "SAPPER";
+				case "SHOTGUN_PRIMARY":
+					return "SHOTGUN";
+				case "PISTOL_SCOUT":
+					return "PISTOL";
+				case "SYRINGEGUN_MEDIC":
+					return "SYRINGE GUN";
+				case "SNIPERRIFLE":
+					return "SNIPER RIFLE";
+				case "Panic Attack Shotgun":
+					return "Panic Attack";
+				case "CLUB":
+					return "KUKRI";
+				case "Stickybomb Jumper":
+					return "The Sticky Jumper";
+				case "SHOTGUN_SOLDIER":
+					return "SHOTGUN";
+				default:
+					return rep;
+			}
 		}
 		//Seperates weapons from classes
 		public List<Item> getClassItems(string pickedClass)
@@ -135,7 +169,16 @@ namespace RandomTF2Loadout
 					{ "building",	ItemView		},
 					{"ItemView",	FormatItemView	}
 				};
-
+				switch (selectClass)
+				{
+					case "Engineer":
+						dict.Remove("pda2");
+						dict.Remove("building");
+						break;
+					case "Spy":
+						dict.Remove("pda");
+						break;
+				}
 				foreach (string code in dict.Keys)
 				{
 					//Checks if the code is there
@@ -262,6 +305,9 @@ namespace RandomTF2Loadout
 				case "/":
 					return BaseSite(hlc);
 
+				case "/PostTag":
+					
+
 					//Defaults to static data
 				default:
 					byte[] data;
@@ -327,6 +373,7 @@ namespace RandomTF2Loadout
 			WebServer.WebServer ws = new WebServer.WebServer(new[] { "http://localhost:9090/" }, HttpFunction);
 			ws.Run();
 			Console.WriteLine("Press any key to stop.");
+
 			Console.ReadKey(true);
 			ws.Stop();
 		}
