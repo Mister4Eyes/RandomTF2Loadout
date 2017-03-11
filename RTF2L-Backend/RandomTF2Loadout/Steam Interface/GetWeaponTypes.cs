@@ -277,7 +277,7 @@ namespace RandomTF2Loadout.Steam_Interface
 				{
 					continue;
 				}
-				if(weapon.name.Contains("Festive") || weapon.name.Contains("Upgradeable") || weapon.name.Contains("Botkiller") || weapon.name.Contains("Promo"))
+				if(weapon.name.Contains("Festive") || weapon.name.Contains("Upgradeable") || weapon.name.Contains("Botkiller") || weapon.name.Contains("Promo") || weapon.name.Contains("Deflector"))
 				{
 					continue;
 				}
