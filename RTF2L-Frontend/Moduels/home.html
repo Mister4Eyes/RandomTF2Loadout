@@ -1,60 +1,38 @@
-	<div class="col-sm-3">
-		<audio id="audio" src="audio/Cheeki_Breeki_Hardbass_Anthem.mp3" autostart="false" ></audio>
-		<h6 onclick="playSound(); pauseAnthem();" style="color:#282828;" class="noselect">CHEEKI BREEKI</h6>
+<div class="col-sm-3">
+	<audio id="audio" src="audio/Cheeki_Breeki_Hardbass_Anthem.mp3" autostart="false" ></audio>
+	<h6 onclick="playSound(); pauseAnthem();" style="color:#282828;" class="noselect">CHEEKI BREEKI</h6>
+</div>
+<div class="panel col-sm-6" align="center" id="background">
+	<h1>Random TF2 Loadouts</h1>
+	<div align="center" class="panel panel-heading" id="header">
+		<!--<a href="">
+			<button class="btn btn-info btn-lg">CHEEKI BREEKI</button>
+		</a>-->		
+		<a href="http://i.imgur.com/wKmhJbz.jpg" target="_blank" style="text-decoration:none;">
+			<audio id="anthem" src="audio/anthem.mp3" autostart="false" ></audio>
+			<button class="btn btn-lg" onclick="playAnthem(); pauseSound();" style="text-color:none;">Furries</button>
+		</a>
+		<a>
+			<button class="btn btn-lg" onclick="reload()">Refresh</button>
+		</a>
 	</div>
-	<div class="panel col-sm-6" align="center" id="background">
-		<h1>Random TF2 Loadouts</h1>
-		<div align="center" class="panel panel-heading" id="header">
-			<!--<a href="">
-				<button class="btn btn-info btn-lg">CHEEKI BREEKI</button>
-			</a>-->		
-			<a href="http://i.imgur.com/wKmhJbz.jpg" target="_blank" style="text-decoration:none;">
-				<audio id="anthem" src="audio/anthem.mp3" autostart="false" ></audio>
-				<button class="btn btn-lg" onclick="playAnthem(); pauseSound();" style="text-color:none;">Furries</button>
-			</a>
-			<a>
-				<button class="btn btn-lg" onclick="reload()">Refresh</button>
-			</a>
-		</div>
-		
+	
+	<br>
+	
+	<div align="center" class="panel panel-body" id="body">
+		<!-- Gui? goes here --->
+			{forms}
 		<br>
-		
-		<div align="center" class="panel panel-body" id="body">
-			<!-- Gui? goes here --->
-			<div>
-				<form class="form-horizontal">
-					<div class="form-group">
-						<label class="control-label col-sm-2" for="pwd">Steam ID:</label>
-						<div class="col-sm-10">          
-							<input type="text" class="form-control" id="pwd" placeholder="Enter SteamID">
-						</div>
-					</div>
-					<div class="form-group">        
-						<div class="col-sm-offset-2 col-sm-10">
-							<div class="checkbox">
-								<label><input type="checkbox"> Remember me</label>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">        
-						<div class="col-sm-offset-2 col-sm-10">
-							<button type="submit" class="btn btn-primary btn-lg">Submit</button>
-						</div>
-					</div>
-				</form>
-			</div>
-			<br>
-			<h1>Your Loadout</h1>
-			<!--<img src="http://cdn.mos.cms.futurecdn.net/12b3163555c670c239abcd31455e3a00.png" />
-			<img id="theImage" src="http://cdn.mos.cms.futurecdn.net/12b3163555c670c239abcd31455e3a00.png" class="img-responsive center-block"/>-->
-			<br>
-			{ItemView}
-		</div>
-		<footer>
-			<span>
-				<h5>MEME TIME&trade; &#0169 2016</h5>
-			</span>
-		</footer>
+		<h1>Your Loadout</h1>
+		<!--<img id="theImage" src="http://cdn.mos.cms.futurecdn.net/12b3163555c670c239abcd31455e3a00.png" class="img-responsive center-block"/>-->
+		<br>
+		{ItemView}
 	</div>
-	<div class="col-sm-3"></div>
+	<footer>
+		<span>
+			<h5>MEME TIME&trade; &#0169 2016</h5>
+		</span>
+	</footer>
+</div>
+<div class="col-sm-3"></div>
 	

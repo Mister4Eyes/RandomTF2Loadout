@@ -53,11 +53,12 @@
 .loadout{
 	float:left;
 	margin-left: 10px;
-	text-align:center;
+	text-align: center;
 }
 .character{
 	float: right;
 	margin-right: 10px;
+	margin-top: 100px;
 }
 footer{
 	height:60px;
