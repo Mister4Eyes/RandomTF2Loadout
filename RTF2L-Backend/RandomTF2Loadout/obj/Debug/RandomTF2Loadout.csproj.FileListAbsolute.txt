@@ -1,41 +1,4 @@
-c:\users\mister 4 eyes\documents\visual studio 2015\Projects\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\RandomTF2Loadout.exe.config
-c:\users\mister 4 eyes\documents\visual studio 2015\Projects\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\RandomTF2Loadout.exe
-c:\users\mister 4 eyes\documents\visual studio 2015\Projects\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\RandomTF2Loadout.pdb
-c:\users\mister 4 eyes\documents\visual studio 2015\Projects\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.dll
-c:\users\mister 4 eyes\documents\visual studio 2015\Projects\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\Newtonsoft.Json.dll
-c:\users\mister 4 eyes\documents\visual studio 2015\Projects\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.pdb
-c:\users\mister 4 eyes\documents\visual studio 2015\Projects\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.xml
-c:\users\mister 4 eyes\documents\visual studio 2015\Projects\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\Newtonsoft.Json.xml
-c:\users\mister 4 eyes\documents\visual studio 2015\Projects\RandomTF2Loadout\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.csprojResolveAssemblyReference.cache
-c:\users\mister 4 eyes\documents\visual studio 2015\Projects\RandomTF2Loadout\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.exe
-c:\users\mister 4 eyes\documents\visual studio 2015\Projects\RandomTF2Loadout\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.pdb
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\RandomTF2Loadout.exe.config
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.exe
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.pdb
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\RandomTF2Loadout.exe
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\RandomTF2Loadout.pdb
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.dll
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\Newtonsoft.Json.dll
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.pdb
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.xml
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\Newtonsoft.Json.xml
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.csprojResolveAssemblyReference.cache
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RandomTF2Loadout\bin\Debug\MimeTypeMap.dll
-C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\RandomTF2Loadout.exe.config
-C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.exe
-C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.pdb
-C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\RandomTF2Loadout.exe
-C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\RandomTF2Loadout.pdb
-C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.dll
-C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\MimeTypeMap.dll
-C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\Newtonsoft.Json.dll
-C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.pdb
-C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.xml
-C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\Newtonsoft.Json.xml
-C:\Users\Mister 4 Eyes\Desktop\Random Tf2 Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.csprojResolveAssemblyReference.cache
 C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\RandomTF2Loadout.exe.config
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.exe
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.pdb
 C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\RandomTF2Loadout.exe
 C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\RandomTF2Loadout.pdb
 C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.dll
@@ -45,3 +8,5 @@ C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\b
 C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.xml
 C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\Newtonsoft.Json.xml
 C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.csprojResolveAssemblyReference.cache
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.exe
+C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.pdb

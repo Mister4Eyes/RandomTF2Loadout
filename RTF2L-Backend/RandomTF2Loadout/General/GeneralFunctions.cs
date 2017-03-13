@@ -57,7 +57,7 @@ namespace RandomTF2Loadout.General
 					//Found directory
 					if (checkDirectory.Name.Equals(clientDirectoryName))
 					{
-						return checkDirectory.FullName;
+						return checkDirectory.FullName+"\\";
 					}
 
 					if (direction)
@@ -95,7 +95,9 @@ namespace RandomTF2Loadout.General
 					return null;
 				}
 			}
-			return null;
+
+			//I feel that searching through the entire goddamn computer for 1 directory deserves an exception.
+			throw new DirectoryNotFoundException(string.Format("Could not find {0}."));
 		}
 	}
 }

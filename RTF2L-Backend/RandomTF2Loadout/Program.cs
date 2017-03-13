@@ -297,7 +297,7 @@ namespace RandomTF2Loadout
 		public byte[] HttpFunction(HttpListenerContext hlc)
 		{
 			string url = hlc.Request.Url.AbsolutePath;
-			Console.WriteLine(url);
+			Console.WriteLine("{0}\t{1}", url, hlc.Request.HttpMethod);
 
 			//Uri controller
 			switch (url)
