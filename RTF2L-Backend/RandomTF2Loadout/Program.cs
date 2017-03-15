@@ -299,6 +299,18 @@ namespace RandomTF2Loadout
 			string url = hlc.Request.Url.AbsolutePath;
 			Console.WriteLine("{0}\t{1}", url, hlc.Request.HttpMethod);
 
+            if (hlc.Request.HttpMethod.Equals("POST"))
+            {
+                Console.WriteLine("--==  POST DATA  ==--");
+                string text;
+                using(var reader = new StreamReader(hlc.Request.InputStream, hlc.Request.ContentEncoding))
+                {
+                    text = reader.ReadToEnd();
+                    Console.WriteLine(text);
+                }
+                Console.WriteLine("--==END POST DATA==--");
+            }
+
 			//Uri controller
 			switch (url)
 			{
