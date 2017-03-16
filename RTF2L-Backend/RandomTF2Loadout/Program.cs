@@ -135,7 +135,7 @@ namespace RandomTF2Loadout
         public string parseSwitches(string site, Session session)
         {
             //Short for Long Ass Pattern
-            const string LAP = @"#if\s+([\w\d-]+)\s*?\n([\w\W]+?)(?:#else\s*?\n([\w\W]+?))#endif";
+            const string LAP = @"#if\s+([\w\d-]+)\s*?\n([\w\W]*?)(?:#else\s*?\n([\w\W]*?))#endif";
 
             //Matches the long ass pattern to the text
             MatchCollection matches = Regex.Matches(site, LAP);
@@ -172,7 +172,7 @@ namespace RandomTF2Loadout
             return site;
         }
 
-		public string FormatWebpage(string str, Session session = null)
+		public string FormatWebpage(string str, Session session)
 		{
 			string[] classes = new string[]
 			{
@@ -254,9 +254,9 @@ namespace RandomTF2Loadout
 		public bool TryGetModuel(string path, out string data, Session session)
 		{
 			DirectoryInfo moduelsDirectory = new DirectoryInfo(string.Format("{0}moduels", ClientDirectory));
-
-			//Checks if there is a moduel directory
-			if (moduelsDirectory.Exists)
+            
+            //Checks if there is a moduel directory
+            if (moduelsDirectory.Exists)
 			{
 				FileInfo moduelFile = new FileInfo(string.Format(@"{0}Moduels\{1}.html", ClientDirectory, path));
 
@@ -271,7 +271,7 @@ namespace RandomTF2Loadout
 			return false;
 		}
 
-		public bool TryGetStatic(HttpListenerContext hlc, out byte[] data)
+		public bool TryGetStatic(HttpListenerContext hlc, Session sesh, out byte[] data)
 		{
 			DirectoryInfo staticDirectory = new DirectoryInfo(ClientDirectory + @"static");
             
@@ -290,7 +290,7 @@ namespace RandomTF2Loadout
 
 					if (urlFile.Extension.Equals(".html"))
 					{
-						data = Encoding.UTF8.GetBytes(FormatWebpage(File.ReadAllText(urlFile.FullName)));
+						data = Encoding.UTF8.GetBytes(FormatWebpage(File.ReadAllText(urlFile.FullName), sesh));
 					}
 					else
 					{
@@ -330,7 +330,7 @@ namespace RandomTF2Loadout
 			//Checks for 404 file. If not found then it gives a 500 for the 404
 			if (fzf.Exists)
 			{
-				return Encoding.UTF8.GetBytes(FormatWebpage(File.ReadAllText(fzf.FullName)));
+				return Encoding.UTF8.GetBytes(FormatWebpage(File.ReadAllText(fzf.FullName), null));
 			}
             hlc.Response.StatusCode = 500;
 			string none = "<head><title>500</title></head><body>The 404 does not exist.</body>";
@@ -352,7 +352,7 @@ namespace RandomTF2Loadout
                 default:
                     byte[] data;
                     string modDat;
-                    if (TryGetStatic(hlc, out data))
+                    if (TryGetStatic(hlc, sesh, out data))
                     {
                         return data;
                     }
