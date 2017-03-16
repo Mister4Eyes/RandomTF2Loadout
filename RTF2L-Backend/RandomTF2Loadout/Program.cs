@@ -12,6 +12,7 @@ using MimeTypes;
 using RandomTF2Loadout.Steam_Interface;
 using System.Threading;
 using System.Text.RegularExpressions;
+using RandomTF2Loadout.General;
 
 namespace RandomTF2Loadout
 {
@@ -126,7 +127,7 @@ namespace RandomTF2Loadout
 			{
 				string imgDirectory = string.Format("img/{0}.png", pickedClass);
 				string fileText = File.ReadAllText(string.Format(@"{0}Moduels\ItemView.html", ClientDirectory)).Replace("{","{{").Replace("}","}}").Replace("{{0}}","{0}").Replace("{{1}}","{1}");
-				return FormatWebpage(string.Format(fileText, imgDirectory, pickedClass).Replace("{{","{").Replace("}}","}"), pickedClass);
+				return string.Format(fileText, imgDirectory, pickedClass);
 			}
 			catch(Exception e)
 			{
@@ -134,6 +135,7 @@ namespace RandomTF2Loadout
 				return "";
 			}
 		}
+
 		public string FormatWebpage(string str)
 		{
 
@@ -154,60 +156,59 @@ namespace RandomTF2Loadout
 			return FormatWebpage(str, selectClass);
 		}
 		public string FormatWebpage(string str, string selectClass)
-		{
-			//Doubles up the {} so the formatter dosen't get confused
-			str = str.Replace("{", "{{").Replace("}", "}}");
+        {
+            DirectoryInfo moduelsDirectory = new DirectoryInfo(string.Format("{0}moduels", ClientDirectory));
+            List<string> staticNames = new List<string>();
+            foreach(FileInfo fi in moduelsDirectory.EnumerateFiles())
+            {
+                staticNames.Add(fi.Name.Replace(".html", ""));
+            }
 
+            //Static custom functions
+            Dictionary<string, Func<string, string, string>> dict = new Dictionary<string, Func<string, string, string>>()
 			{
-				Dictionary<string, Func<string, string, string>> dict = new Dictionary<string, Func<string, string, string>>()
-				{
-					{ "primary",	ItemView		},
-					{ "secondary",	ItemView		},
-					{ "melee",		ItemView		},
-					{ "pda",		ItemView		},
-					{ "pda2",		ItemView		},
-					{ "building",	ItemView		},
-					{"ItemView",	FormatItemView	}
-				};
-				switch (selectClass)
-				{
-					case "Engineer":
-						dict.Remove("pda2");
-						dict.Remove("building");
-						break;
-					case "Spy":
-						dict.Remove("pda");
-						break;
-				}
-				foreach (string code in dict.Keys)
-				{
-					//Checks if the code is there
-					if (str.Contains("{{" + code + "}}"))
-					{
-						str = str.Replace("{{" + code + "}}", "{0}");
-						str = string.Format(str, dict[code](code, selectClass)).Replace("{", "{{").Replace("}", "}}");
-					}
-				}
+				{ "primary",	ItemView		},
+				{ "secondary",	ItemView		},
+				{ "melee",		ItemView		},
+				{ "pda",		ItemView		},
+				{ "pda2",		ItemView		},
+				{ "building",	ItemView		},
+				{"ItemView",	FormatItemView	}
+			};
 
-				Match staticFormat = Regex.Match(str, @"{{([\w\d-]+)}}");
-
-				//Goes through any static moduels
-				while (staticFormat.Success)
-				{
-					string data;
-					if (TryGetModuel(staticFormat.Groups[1].Value, out data))
-					{
-						str = str.Replace(staticFormat.Value, "{0}");
-						str = string.Format(str, FormatWebpage(data, selectClass).Replace("}", "}}").Replace("{", "{{"));
-					}
-
-					staticFormat = staticFormat.NextMatch();
-				}
+            //Removes proper things for the classes
+            switch (selectClass)
+			{
+				case "Engineer":
+					dict.Remove("pda2");
+					dict.Remove("building");
+					break;
+				case "Spy":
+					dict.Remove("pda");
+					break;
 			}
+            List<FormatKeyPair> keyPairs = new List<FormatKeyPair>();
+            const string pattern = @"{([\w\d-]+)(?::[\w\d-]+)?}";
 
-			//Returns them to their origional form
-			str = str.Replace("{{", "{").Replace("}}", "}");
-			return str;
+            //Searches for the moduels
+            MatchCollection mc = Regex.Matches(str, pattern);
+            foreach(Match m in mc)
+            {
+                string name = m.Groups[1].Value;
+
+                //Adds in static custom functions
+                if (dict.ContainsKey(name))
+                {
+                    keyPairs.Add(new FormatKeyPair(name, FormatWebpage(dict[name](name, selectClass), selectClass)));
+                }
+                //Adds in static directory
+                else if (staticNames.Contains(name))
+                {
+                    keyPairs.Add(new FormatKeyPair(name, FormatWebpage(File.ReadAllText(string.Format(@"{0}\{1}.html", moduelsDirectory.FullName, name)))));
+                }
+            }
+            
+            return AdvancedFormat.Format(str, keyPairs.ToArray());
 		}
 
 		public bool TryGetModuel(string path, out string data)
@@ -285,58 +286,73 @@ namespace RandomTF2Loadout
 			hlc.Response.ContentType = "text/html";
 			hlc.Response.ContentEncoding = Encoding.UTF8;
 
-			//Checks for 404 file. If not found then it gives a 404 for the 404 (meta)
+			//Checks for 404 file. If not found then it gives a 500 for the 404
 			if (fzf.Exists)
 			{
-				return File.ReadAllBytes(fzf.FullName);
+				return Encoding.UTF8.GetBytes(FormatWebpage(File.ReadAllText(fzf.FullName)));
 			}
-			string none = "<head><title>404</title></head><body>The 404 could not be found.</body>";
+            hlc.Response.StatusCode = 500;
+			string none = "<head><title>500</title></head><body>The 404 does not exist.</body>";
 			return Encoding.UTF8.GetBytes(none);
 		}
 
+        public byte[] HttpFunctionGET(string url, HttpListenerContext hlc)
+        {
+            //Uri controller
+            switch (url)
+            {
+                case "/":
+                    return BaseSite(hlc);
+
+                case "/PostTag":
+
+
+                //Defaults to static data
+                default:
+                    byte[] data;
+                    string modDat;
+                    if (TryGetStatic(hlc, out data))
+                    {
+                        return data;
+                    }
+                    else if (DevMode && TryGetModuel(url, out modDat))
+                    {
+                        return Encoding.UTF8.GetBytes(modDat);
+                    }
+                    else
+                    {
+                        return FourZeroFour(hlc);
+                    }
+            }
+        }
 		public byte[] HttpFunction(HttpListenerContext hlc)
 		{
 			string url = hlc.Request.Url.AbsolutePath;
 			Console.WriteLine("{0}\t{1}", url, hlc.Request.HttpMethod);
 
+            switch (hlc.Request.HttpMethod)
+            {
+                case "GET":
+                    return HttpFunctionGET(url, hlc);
+
+                case "POST":
+                    Console.WriteLine("--==  POST DATA  ==--");
+                    string text;
+                    using (var reader = new StreamReader(hlc.Request.InputStream, hlc.Request.ContentEncoding))
+                    {
+                        text = reader.ReadToEnd();
+                        Console.WriteLine(text);
+                    }
+                    Console.WriteLine("--==END POST DATA==--");
+                    return HttpFunctionGET(url, hlc);
+
+                default:
+                    return FourZeroFour(hlc);
+            }
             if (hlc.Request.HttpMethod.Equals("POST"))
             {
-                Console.WriteLine("--==  POST DATA  ==--");
-                string text;
-                using(var reader = new StreamReader(hlc.Request.InputStream, hlc.Request.ContentEncoding))
-                {
-                    text = reader.ReadToEnd();
-                    Console.WriteLine(text);
-                }
-                Console.WriteLine("--==END POST DATA==--");
             }
 
-			//Uri controller
-			switch (url)
-			{
-				case "/":
-					return BaseSite(hlc);
-
-				case "/PostTag":
-					
-
-					//Defaults to static data
-				default:
-					byte[] data;
-					string modDat;
-					if(TryGetStatic(hlc, out data))
-					{
-						return data;
-					}
-					else if(DevMode && TryGetModuel(url, out modDat))
-					{
-						return Encoding.UTF8.GetBytes(modDat);
-					}
-					else
-					{
-						return FourZeroFour(hlc);
-					}
-			}
 		}
 		/*
 		public void Start()
