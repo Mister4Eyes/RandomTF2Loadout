@@ -63,7 +63,10 @@ namespace RandomTF2Loadout
 					return "The Sticky Jumper";
 				case "SHOTGUN_SOLDIER":
 					return "SHOTGUN";
-				default:
+                case "PIPEBOMBLAUNCHER":
+                    return "Stickybomb Launcher";
+
+                default:
 					return rep;
 			}
 		}
