@@ -65,6 +65,7 @@
     <Compile Include="Steam Interface\SteamInventory.cs" />
     <Compile Include="Steam Interface\SteamKEY.cs" />
     <Compile Include="Steam Interface\UserURLToSteamID64.cs" />
+    <Compile Include="WebServer\Session.cs" />
     <Compile Include="WebServer\WebServer.cs" />
   </ItemGroup>
   <ItemGroup>

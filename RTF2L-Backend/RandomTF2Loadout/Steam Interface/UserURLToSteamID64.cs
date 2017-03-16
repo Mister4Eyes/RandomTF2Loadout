@@ -49,7 +49,7 @@ namespace RandomTF2Loadout.Steam_Interface
 				return false;
 			}
 		}
-		public static bool tryParseSteamID64(string steamUrl, out string result)
+		public static bool TryParseSteamID64(string steamUrl, out string result)
 		{
 			//Constants used in this function
 			const string urlPattern = @"http:\/\/steamcommunity\.com\/";
@@ -94,10 +94,10 @@ namespace RandomTF2Loadout.Steam_Interface
 			}
 		}
 		
-		public static string parseSteamID64(string steamUrl)
+		public static string ParseSteamID64(string steamUrl)
 		{
 			string result;
-			if(tryParseSteamID64(steamUrl, out result))
+			if(TryParseSteamID64(steamUrl, out result))
 			{
 				return result;
 			}else

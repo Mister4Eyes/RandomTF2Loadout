@@ -335,7 +335,7 @@ namespace RandomTF2Loadout
             }
 
 		}
-		//*
+		/*
 		public void Start()
 		{
 			string customSteamName = "Mister_4_Eyes";
@@ -358,7 +358,7 @@ namespace RandomTF2Loadout
 			Console.ReadKey(true);
 		}
 		//*/
-		/*
+		//*
 		public void Start()
 		{
 			bool.TryParse(GeneralFunctions.ParseConfigFile("DevMode"), out DevMode);
