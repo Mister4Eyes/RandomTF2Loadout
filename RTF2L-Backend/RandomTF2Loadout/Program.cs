@@ -119,6 +119,45 @@ namespace RandomTF2Loadout
 				return "";
 			}
 		}
+        public string parseSwitches(string site, Session session)
+        {
+            //Short for Long Ass Pattern
+            const string LAP = @"#if\s+([\w\d-]+)\s*?\n([\w\W]+?)(?:#else\s*?\n([\w\W]+?))#endif";
+
+            //Matches the long ass pattern to the text
+            MatchCollection matches = Regex.Matches(site, LAP);
+
+            /*
+             *LAP has 3 groups
+             * 1 This is the parameter to check..
+             * 2 This is the first resultant text.
+             * 3 (Optional) This is the optional failure text.
+             */
+            foreach(Match match in matches)
+            {
+                bool success;
+                string sucString = match.Groups[2].Value;
+                string falString = (match.Groups[3].Success) ? match.Groups[3].Value : string.Empty;
+
+                //Varius ways of initializing success
+                switch (match.Groups[1].Value.Trim())
+                {
+                    case "HasSession":
+                        success = session != null;
+                        break;
+                    //Defaults to failure
+                    default:
+                        success = false;
+                        break;
+                }
+                //Replaces statement with correct string and overrites old string
+                site = site.Replace(
+                    match.Value,
+                    (success) ? sucString : falString);
+            }
+
+            return site;
+        }
 
 		public string FormatWebpage(string str, Session session = null)
 		{
@@ -142,6 +181,8 @@ namespace RandomTF2Loadout
         {
             DirectoryInfo moduelsDirectory = new DirectoryInfo(string.Format("{0}moduels", ClientDirectory));
             List<string> staticNames = new List<string>();
+
+            str = parseSwitches(str, session);
             foreach(FileInfo fi in moduelsDirectory.EnumerateFiles())
             {
                 staticNames.Add(fi.Name.Replace(".html", ""));
@@ -191,7 +232,7 @@ namespace RandomTF2Loadout
                 }
             }
             
-            return AdvancedFormat.Format(str, keyPairs.ToArray());
+            return AdvancedFormat.Format(str, session, keyPairs.ToArray());
 		}
 
 		public bool TryGetModuel(string path, out string data)
@@ -309,6 +350,7 @@ namespace RandomTF2Loadout
                     }
             }
         }
+
 		public byte[] HttpFunction(HttpListenerContext hlc)
 		{
 			string url = hlc.Request.Url.AbsolutePath;
@@ -379,7 +421,7 @@ namespace RandomTF2Loadout
 				}
 			}
 
-			WebServer.WebServer ws = new WebServer.WebServer(new[] { "http://localhost:9090/" }, HttpFunction);
+			WebServer.WebServer ws = new WebServer.WebServer(GeneralFunctions.ParseConfigFile("URIs").Split(','), HttpFunction);
 			ws.Run();
 			Console.WriteLine("Press any key to stop.");
 

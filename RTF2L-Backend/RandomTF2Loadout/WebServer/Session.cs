@@ -132,6 +132,7 @@ namespace RandomTF2Loadout.WebServer
             {
                 sessionClassItems = tempClassItems;
             }
+            lastUpdate = DateTime.Now;
         }
     }
 }
