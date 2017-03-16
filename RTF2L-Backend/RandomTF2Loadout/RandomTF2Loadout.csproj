@@ -50,6 +50,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -68,6 +69,7 @@
     <Compile Include="Steam Interface\SteamInventory.cs" />
     <Compile Include="Steam Interface\SteamKEY.cs" />
     <Compile Include="Steam Interface\UserURLToSteamID64.cs" />
+    <Compile Include="WebServer\PostData.cs" />
     <Compile Include="WebServer\Session.cs" />
     <Compile Include="WebServer\WebServer.cs" />
   </ItemGroup>
