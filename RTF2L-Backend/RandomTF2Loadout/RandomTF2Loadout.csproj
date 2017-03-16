@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="General\AdvancedFormat.cs" />
     <Compile Include="General\GeneralFunctions.cs" />
     <Compile Include="Steam Interface\GetWeaponTypes.cs" />
     <Compile Include="General\htmlDownloader.cs" />
