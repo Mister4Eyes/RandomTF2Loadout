@@ -24,24 +24,8 @@ namespace RandomTF2Loadout
 		string ClientDirectory;
 		Random r = new Random();
 
-		Dictionary<string, List<Item>> generalClassItems = InitializeDictonary();
+		Dictionary<string, List<Item>> generalClassItems = GeneralFunctions.InitializeDictonary();
 
-		public static Dictionary<string, List<Item>> InitializeDictonary()
-		{
-			return new Dictionary<string, List<Item>>()
-		{
-			{"Scout",	new List<Item>() },
-			{"Soldier",	new List<Item>() },
-			{"Pyro",	new List<Item>() },
-			{"Demoman",	new List<Item>() },
-			{"Heavy",	new List<Item>() },
-			{"Engineer",new List<Item>() },
-			{"Medic",	new List<Item>() },
-			{"Sniper",	new List<Item>() },
-			{"Spy",		new List<Item>() }
-		};
-
-		}
 		public string getWeponName(string str)
 		{
 			string rep = str.Replace("TF_WEAPON_", "");
@@ -101,7 +85,7 @@ namespace RandomTF2Loadout
 			return classItm;
 		}
 
-		public string ItemView(string str, string pickedClass)
+		public string ItemView(string str, string pickedClass, Session session)
 		{
 			List<Item> picked = getClassItems(pickedClass);
 			List<Item> prune = new List<Item>();
@@ -121,7 +105,7 @@ namespace RandomTF2Loadout
 			return string.Format(File.ReadAllText(string.Format(@"{0}Moduels\Item.html", ClientDirectory)), select.image_url, getWeponName(select.name));
 		}
 
-		public string FormatItemView(string str, string pickedClass)
+		public string FormatItemView(string str, string pickedClass, Session session)
 		{
 			try
 			{
@@ -136,9 +120,8 @@ namespace RandomTF2Loadout
 			}
 		}
 
-		public string FormatWebpage(string str)
+		public string FormatWebpage(string str, Session session = null)
 		{
-
 			string[] classes = new string[]
 			{
 					"Scout"		,
@@ -153,9 +136,9 @@ namespace RandomTF2Loadout
 			};
 
 			string selectClass = classes[r.Next(classes.Length)];
-			return FormatWebpage(str, selectClass);
+			return FormatWebpage(str, selectClass, session);
 		}
-		public string FormatWebpage(string str, string selectClass)
+		public string FormatWebpage(string str, string selectClass, Session session = null)
         {
             DirectoryInfo moduelsDirectory = new DirectoryInfo(string.Format("{0}moduels", ClientDirectory));
             List<string> staticNames = new List<string>();
@@ -165,7 +148,7 @@ namespace RandomTF2Loadout
             }
 
             //Static custom functions
-            Dictionary<string, Func<string, string, string>> dict = new Dictionary<string, Func<string, string, string>>()
+            Dictionary<string, Func<string, string, Session, string>> dict = new Dictionary<string, Func<string, string, Session, string>>()
 			{
 				{ "primary",	ItemView		},
 				{ "secondary",	ItemView		},
@@ -173,7 +156,7 @@ namespace RandomTF2Loadout
 				{ "pda",		ItemView		},
 				{ "pda2",		ItemView		},
 				{ "building",	ItemView		},
-				{"ItemView",	FormatItemView	}
+				{ "ItemView",	FormatItemView	}
 			};
 
             //Removes proper things for the classes
@@ -199,7 +182,7 @@ namespace RandomTF2Loadout
                 //Adds in static custom functions
                 if (dict.ContainsKey(name))
                 {
-                    keyPairs.Add(new FormatKeyPair(name, FormatWebpage(dict[name](name, selectClass), selectClass)));
+                    keyPairs.Add(new FormatKeyPair(name, FormatWebpage(dict[name](name, selectClass, session), selectClass)));
                 }
                 //Adds in static directory
                 else if (staticNames.Contains(name))
@@ -234,7 +217,8 @@ namespace RandomTF2Loadout
 		public bool TryGetStatic(HttpListenerContext hlc, out byte[] data)
 		{
 			DirectoryInfo staticDirectory = new DirectoryInfo(ClientDirectory + @"static");
-
+            
+            
 			//Checks if there is a static directory
 			if (staticDirectory.Exists)
 			{
@@ -349,41 +333,38 @@ namespace RandomTF2Loadout
                 default:
                     return FourZeroFour(hlc);
             }
-            if (hlc.Request.HttpMethod.Equals("POST"))
-            {
-            }
 
 		}
-		/*
-		public void Start()
-		{
-			string customSteamName = "Mister_4_Eyes";
-			string steamID64 = UserURLToSteamID64.parseSteamID64(customSteamName);
-			Item[] items = WeaponGather.RemoveReskins(WeaponGather.getWeapons());
-
-			List<string> bla = new List<string>();
-			foreach(Item i in items)
-			{
-				if (!bla.Contains(i.item_slot))
-				{
-					bla.Add(i.item_slot);
-				}
-			}
-			foreach(string str in bla)
-			{
-				Console.WriteLine(str);
-			}
-			Console.WriteLine("Total length:{0}",items.Length);
-			Console.ReadKey(true);
-		}
-		//*/
 		//*
 		public void Start()
 		{
-			bool.TryParse(General.GeneralFunctions.ParseConfigFile("DevMode"), out DevMode);
+			string customSteamName = "Mister_4_Eyes";
+            Session session = new Session(IPAddress.Any);
+            
+            if (session.TrySetSteamID64(customSteamName))
+            {
+                Console.WriteLine("Steam id set successfully.");
+                session.UpdateTask.Wait();
+                foreach (string classKey in session.sessionClassItems.Keys)
+                {
+                    Console.WriteLine(classKey);
+                    foreach(Item item in session.sessionClassItems[classKey])
+                    {
+                        Console.WriteLine("\t{0}", getWeponName(item.name));
+                    }
+                }
+            }
 
-			BaseDirectory = General.GeneralFunctions.getBaseDirectory();
-			ClientDirectory = General.GeneralFunctions.getClientDirectory();
+			Console.ReadKey(true);
+		}
+		//*/
+		/*
+		public void Start()
+		{
+			bool.TryParse(GeneralFunctions.ParseConfigFile("DevMode"), out DevMode);
+
+			BaseDirectory = GeneralFunctions.getBaseDirectory();
+			ClientDirectory = GeneralFunctions.getClientDirectory();
 			if (DevMode)
 			{
 				Console.WriteLine("Development mode engaged.");
