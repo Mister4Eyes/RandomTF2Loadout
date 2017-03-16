@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RandomTF2Loadout.Steam_Interface;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,43 @@ namespace RandomTF2Loadout.General
 		const bool UP	= true; //I am a parent and I'm checking my parents
 		const bool DOWN	= false;//I am a child and I'm checking my children
 
+        public static Dictionary<string, List<Item>> InitializeDictonary()
+        {
+            return new Dictionary<string, List<Item>>()
+            {
+                {"Scout",   new List<Item>() },
+                {"Soldier", new List<Item>() },
+                {"Pyro",    new List<Item>() },
+                {"Demoman", new List<Item>() },
+                {"Heavy",   new List<Item>() },
+                {"Engineer",new List<Item>() },
+                {"Medic",   new List<Item>() },
+                {"Sniper",  new List<Item>() },
+                {"Spy",     new List<Item>() }
+            };
+        }
+        public static bool CompareBytes(byte[] b1, byte[] b2)
+        {
+            //Test #1
+            //Checks if lengths are correct size
+            if(b1.Length != b2.Length)
+            {
+                return false;
+            }
+
+            //Test #2
+            //Loops through array to look for unequal bytes.
+            for(int i = 0; i < b1.Length; ++i)
+            {
+                if(b1[i] != b2[i])
+                {
+                    return false;
+                }
+            }
+
+            //Nothing failed, therefor they are the same.
+            return true;
+        }
 		public static string getBaseDirectory()
 		{
 			FileInfo fi = new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
