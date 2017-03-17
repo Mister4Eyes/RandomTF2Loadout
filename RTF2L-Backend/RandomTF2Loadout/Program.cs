@@ -65,7 +65,8 @@ namespace RandomTF2Loadout
 					return "SHOTGUN";
                 case "PIPEBOMBLAUNCHER":
                     return "Stickybomb Launcher";
-
+                case "SHOTGUN_PYRO":
+                    return "SHOTGUN";
                 default:
 					return rep;
 			}
@@ -99,8 +100,10 @@ namespace RandomTF2Loadout
             }
             else
             {
-                session.UpdateTask.Wait();
-                classItems = session.sessionClassItems;
+                lock (session.sessionClassItems)
+                {
+                    classItems = session.sessionClassItems;
+                }
             }
             List<Item> picked = getClassItems(pickedClass, classItems);
 			List<Item> prune = new List<Item>();
@@ -194,6 +197,18 @@ namespace RandomTF2Loadout
 			return FormatWebpage(str, selectClass, session);
 		}
 
+        public string SessionInformation(string str, Session sesh)
+        {
+            switch (str)
+            {
+                case "Name":
+                    return sesh.playerName;
+                case "SteamID64":
+                    return sesh.steamID64;
+                default:
+                    return "";
+            }
+        }
         public string FormatWebpage(string str, string selectClass, Session session)
         {
                DirectoryInfo moduelsDirectory = new DirectoryInfo(string.Format("{0}moduels", ClientDirectory));
@@ -232,7 +247,7 @@ namespace RandomTF2Loadout
 			}
             List<FormatKeyPair> keyPairs = new List<FormatKeyPair>();
             const string pattern = @"{([\w\d-]+)(?::[\w\d-]+)?}";
-
+            keyPairs.Add(new FormatKeyPair("SessionInfo", SessionInformation));
             //Searches for the moduels
             MatchCollection mc = Regex.Matches(str, pattern);
             foreach(Match m in mc)
