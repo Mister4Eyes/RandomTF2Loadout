@@ -452,7 +452,8 @@ namespace RandomTF2Loadout
                     Console.WriteLine("--==END POST DATA==--");
 
                     PostHandler(hlc, new PostData(text), ref currSession);
-                    return HttpFunctionGET(url, hlc, currSession);
+                    hlc.Response.Redirect(hlc.Request.Url.AbsolutePath);
+                    return new byte[0];
 
                 default:
                     return FourZeroFour(hlc);
