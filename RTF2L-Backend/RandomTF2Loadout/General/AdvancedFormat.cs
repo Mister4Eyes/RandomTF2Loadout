@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RandomTF2Loadout.WebServer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -10,14 +11,14 @@ namespace RandomTF2Loadout.General
     {
         string key;
         string value = null;
-        Func<string, string> stringProcessing = null;
+        Func<string, Session, string> stringProcessing = null;
 
         public FormatKeyPair(string Key, string Value)
         {
             key = Key;
             value = Value;
         }
-        public FormatKeyPair(string Key, Func<string, string> StringProcessing)
+        public FormatKeyPair(string Key, Func<string, Session, string> StringProcessing)
         {
             key = Key;
             stringProcessing = StringProcessing;
@@ -41,7 +42,7 @@ namespace RandomTF2Loadout.General
             return Regex.Match(text, matchString).Success;
         }
 
-        public string Replace(string text)
+        public string Replace(string text, Session session)
         {
             //Changes processing based on string type
             if (stringProcessing == null)
@@ -59,7 +60,7 @@ namespace RandomTF2Loadout.General
                 {
                     try
                     {
-                        text = text.Replace(m.Value, stringProcessing(m.Groups[1].Value));
+                        text = text.Replace(m.Value, stringProcessing(m.Groups[1].Value, session));
                     }
                     //Anything can come through and we don't want erros happening.
                     //But we want them to know whats happening so we add in the error message in the output.
@@ -77,20 +78,20 @@ namespace RandomTF2Loadout.General
 
     class AdvancedFormat
     {
-        public static string Format(string str, FormatKeyPair pair)
+        public static string Format(string str, Session session, FormatKeyPair pair)
         {
             if (pair.HasKey(str))
             {
-                str = pair.Replace(str);
+                str = pair.Replace(str, session);
             }
 
             return str;
         }
-        public static string Format(string str, FormatKeyPair[] strings)
+        public static string Format(string str, Session session,FormatKeyPair[] strings)
         {
             foreach(FormatKeyPair pair in strings)
             {
-                str = Format(str, pair);
+                str = Format(str, session, pair);
             }
             return str;
         }

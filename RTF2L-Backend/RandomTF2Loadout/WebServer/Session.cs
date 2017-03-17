@@ -19,6 +19,8 @@ namespace RandomTF2Loadout.WebServer
         public Dictionary<string, List<Item>> sessionClassItems;
         public List<string> errors = new List<string>();
         public Task UpdateTask = null;
+        public string playerName;
+
         public Session(IPAddress ip)
         {
             ipHash = ipToBytes(ip);
@@ -44,7 +46,7 @@ namespace RandomTF2Loadout.WebServer
 
         public void Accessed()
         {
-            lastAccessed = DateTime.Now;
+            lastAccessed = DateTime.UtcNow;
         }
 
         //Attempts to set steamId64
@@ -94,7 +96,9 @@ namespace RandomTF2Loadout.WebServer
 
             //If the steamid64 is on here, it's not invalid.
             //Therefor we can get away with directly setting the object.
-            List<PlayerItem> playerWeapons = SteamInventory.GetInventory(steamID64).result.items;
+            PlayerRootObject pro = SteamInventory.GetInventory(steamID64);
+            playerName = SteamID64ToName.GetName(steamID64);
+            List<PlayerItem> playerWeapons = pro.result.items;
             
             //Goes through all possible items
             foreach (Item i in WeaponGather.getWeapons())
@@ -121,6 +125,11 @@ namespace RandomTF2Loadout.WebServer
                         {
                             foreach (string str in i.used_by_classes)
                             {
+                                Item changeITM = i;
+                                if (changeITM.name.Equals("The B.A.S.E. Jumper") && str.Equals("Demoman"))
+                                {
+                                    changeITM.item_slot = "primary";
+                                }
                                 tempClassItems[str].Add(i);
                             }
                         }
@@ -132,6 +141,7 @@ namespace RandomTF2Loadout.WebServer
             {
                 sessionClassItems = tempClassItems;
             }
+            lastUpdate = DateTime.UtcNow;
         }
     }
 }
