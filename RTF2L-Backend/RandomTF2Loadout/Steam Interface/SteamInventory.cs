@@ -65,7 +65,7 @@ namespace RandomTF2Loadout.Steam_Interface
 	{
 		public static bool TryGetInventory(string steamID64, out PlayerRootObject iro)
 		{
-			const string inventoryPattern = @"http://api.steampowered.com/IEconItems_440/GetPlayerItems/v0001/?key={0}&SteamID={1}&count=5000";
+			const string inventoryPattern = @"http://api.steampowered.com/IEconItems_440/GetPlayerItems/v0001/?key={0}&SteamID={1}&count=2000";
 
 			//I feel like there are some hidden exceptions I don't know about.
 			try
