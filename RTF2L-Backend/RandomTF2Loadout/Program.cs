@@ -562,13 +562,7 @@ namespace RandomTF2Loadout
 			{
 				foreach(string str in i.used_by_classes)
                 {
-                    Item changeITM = i;
-                    if (changeITM.name.Equals("The B.A.S.E. Jumper") && str.Equals("Demoman"))
-                    {
-                        changeITM = new Item(changeITM);
-                        changeITM.item_slot = "primary";
-                    }
-                    generalClassItems[str].Add(i);
+                    GeneralFunctions.InitializeItems(i, generalClassItems);
 				}
 			}
 

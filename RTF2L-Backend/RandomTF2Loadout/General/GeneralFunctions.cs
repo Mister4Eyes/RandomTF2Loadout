@@ -15,6 +15,20 @@ namespace RandomTF2Loadout.General
 		const bool UP	= true; //I am a parent and I'm checking my parents
 		const bool DOWN	= false;//I am a child and I'm checking my children
 
+        public static void InitializeItems(Item i, Dictionary<string, List<Item>> tempClassItems)
+        {
+            foreach (string str in i.used_by_classes)
+            {
+                Item changeITM = i;
+                if (changeITM.name.Equals("The B.A.S.E. Jumper") && str.Equals("Demoman"))
+                {
+                    changeITM = new Item(i);
+                    changeITM.item_slot = "primary";
+                }
+                tempClassItems[str].Add(changeITM);
+            }
+        }
+
         public static Dictionary<string, List<Item>> InitializeDictonary()
         {
             return new Dictionary<string, List<Item>>()
