@@ -128,6 +128,7 @@ namespace RandomTF2Loadout.WebServer
                                 Item changeITM = i;
                                 if (changeITM.name.Equals("The B.A.S.E. Jumper") && str.Equals("Demoman"))
                                 {
+                                    changeITM = new Item(changeITM);
                                     changeITM.item_slot = "primary";
                                 }
                                 tempClassItems[str].Add(i);

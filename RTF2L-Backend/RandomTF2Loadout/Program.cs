@@ -513,6 +513,7 @@ namespace RandomTF2Loadout
 			Console.ReadKey(true);
 		}
 		//*/
+
 		//*
         public void UpdateSessions()
         {
@@ -564,6 +565,7 @@ namespace RandomTF2Loadout
                     Item changeITM = i;
                     if (changeITM.name.Equals("The B.A.S.E. Jumper") && str.Equals("Demoman"))
                     {
+                        changeITM = new Item(changeITM);
                         changeITM.item_slot = "primary";
                     }
                     generalClassItems[str].Add(i);

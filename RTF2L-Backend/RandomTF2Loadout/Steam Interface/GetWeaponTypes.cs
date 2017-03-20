@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace RandomTF2Loadout.Steam_Interface
 {
@@ -116,8 +118,39 @@ namespace RandomTF2Loadout.Steam_Interface
         public string restriction { get; set; }
     }
 
-    public class Item
+    [Serializable]
+    public class Item 
     {
+        public Item() { }
+        public Item(Item item)
+        {
+            name                    = item.name;
+            defindex                = item.defindex;
+            item_class              = item.item_class;
+            item_type_name          = item.item_type_name;
+            item_name               = item.item_name;
+            proper_name             = item.proper_name;
+            item_slot               = item.item_slot;
+            model_player            = item.model_player;
+            item_quality            = item.item_quality;
+            image_inventory         = item.image_inventory;
+            min_ilevel              = item.min_ilevel;
+            max_ilevel              = item.max_ilevel;
+            image_url               = item.image_url;
+            image_url_large         = item.image_url_large;
+            craft_class             = item.craft_class;
+            craft_material_type     = item.craft_material_type;
+            capabilities            = item.capabilities;
+            used_by_classes         = item.used_by_classes;
+            item_description        = item.item_description;
+            styles                  = item.styles;
+            attributes              = item.attributes;
+            drop_type               = item.drop_type;
+            item_set                = item.item_set;
+            holiday_restriction     = item.holiday_restriction;
+            per_class_loadout_slots = item.per_class_loadout_slots;
+            tool                    = item.tool;
+        }
         public string name { get; set; }
         public int defindex { get; set; }
         public string item_class { get; set; }
@@ -144,6 +177,7 @@ namespace RandomTF2Loadout.Steam_Interface
         public string holiday_restriction { get; set; }
         public PerClassLoadoutSlots per_class_loadout_slots { get; set; }
         public Tool tool { get; set; }
+        
     }
 
     public class Attribute2
@@ -238,7 +272,7 @@ namespace RandomTF2Loadout.Steam_Interface
 
     class WeaponGather
 	{
-		public static Item[] getWeapons()
+        public static Item[] getWeapons()
 		{
 			List<Item> weapons = new List<Item>();
 
@@ -256,8 +290,8 @@ namespace RandomTF2Loadout.Steam_Interface
 					continue;
 				}
 				if (item.craft_material_type != null && item.craft_material_type.Equals("weapon"))
-				{
-					weapons.Add(item);
+                {
+                    weapons.Add(item);
 				}
 			}
 
