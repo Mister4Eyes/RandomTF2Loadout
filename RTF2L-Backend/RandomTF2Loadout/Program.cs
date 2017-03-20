@@ -392,20 +392,50 @@ namespace RandomTF2Loadout
                 switch (pd[i])
                 {
                     case "SteamID":
-                        string steam64;
-                        if (UserURLToSteamID64.TryParseSteamID64(pd["SteamID"], out steam64))
+                        {
+                            string steam64;
+                            if (UserURLToSteamID64.TryParseSteamID64(pd["SteamID"], out steam64))
+                            {
+                                lock (sessions)
+                                {
+                                    if (session == null)
+                                    {
+                                        Session sesh = new Session(hlc.Request.RemoteEndPoint.Address);
+                                        if (sesh.TrySetSteamID64(steam64))
+                                        {
+                                            sessions.Add(sesh);
+                                            session = sessions[sessions.Count - 1];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+
+                    case "StopSession":
                         {
                             lock (sessions)
                             {
-                                if(session == null)
+                                //Searches for sessions and removes the session.
+                                for(int j = 0; i < sessions.Count; ++j)
                                 {
-                                    Session sesh = new Session(hlc.Request.RemoteEndPoint.Address);
-                                    if(sesh.TrySetSteamID64(steam64))
+                                    if(session == sessions[i])
                                     {
-                                        sessions.Add(sesh);
-                                        session = sessions[sessions.Count - 1];
+                                        sessions.RemoveAt(i);
+                                        break;
                                     }
                                 }
+                            }
+                        }
+                        break;
+
+                    case "ChangeID":
+                        if(session != null)
+                        {
+                            string steam64;
+                            if (UserURLToSteamID64.TryParseSteamID64(pd["SteamID"], out steam64))
+                            {
+                                session.TrySetSteamID64(steam64);
                             }
                         }
                         break;
