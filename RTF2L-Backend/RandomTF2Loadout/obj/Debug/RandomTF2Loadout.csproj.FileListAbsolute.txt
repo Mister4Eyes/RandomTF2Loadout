@@ -7,6 +7,5 @@ C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\b
 C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.pdb
 C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\HtmlAgilityPack.xml
 C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\bin\Debug\Newtonsoft.Json.xml
-C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.csprojResolveAssemblyReference.cache
 C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.exe
 C:\Users\Mister 4 Eyes\Desktop\RandomTF2Loadout\RTF2L-Backend\RandomTF2Loadout\obj\Debug\RandomTF2Loadout.pdb
