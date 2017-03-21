@@ -447,6 +447,23 @@ namespace RandomTF2Loadout
 							}
 						}
 						break;
+
+					case "ChangeClass":
+						{
+							if(session != null)
+							{
+								string intString = pd["CharicterID"];
+								byte output;
+								if(byte.TryParse(intString, out output))
+								{
+									if (0 <= output && 9 >= output)
+									{
+										session.SelectClass = output;
+									}
+								}
+							}
+						}
+						break;
 				}
 			}
 		}
