@@ -72,6 +72,7 @@ namespace RandomTF2Loadout.WebServer
 			//Test for status failure.
 			if (!status)
 			{
+				errors.Add("Failure-To-Set-SteamID64");
 				return false;
 			}
 			updateInventory();
