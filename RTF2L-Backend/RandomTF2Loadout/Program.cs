@@ -155,8 +155,8 @@ namespace RandomTF2Loadout
 			foreach(Match match in matches)
 			{
 				bool success = false;
-				string sucString = match.Groups[2].Value;
-				string falString = (match.Groups[3].Success) ? match.Groups[3].Value : string.Empty;
+				string sucString = match.Groups[3].Value;
+				string falString = (match.Groups[4].Success) ? match.Groups[4].Value : string.Empty;
 				
 				switch (match.Groups[1].Value)
 				{

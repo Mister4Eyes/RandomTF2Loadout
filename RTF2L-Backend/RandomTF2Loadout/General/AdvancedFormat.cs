@@ -60,7 +60,10 @@ namespace RandomTF2Loadout.General
 				{
 					try
 					{
-						text = text.Replace(m.Value, stringProcessing(m.Groups[1].Value, session));
+						if(session != null)
+						{
+							text = text.Replace(m.Value, stringProcessing(m.Groups[1].Value, session));
+						}
 					}
 					//Anything can come through and we don't want erros happening.
 					//But we want them to know whats happening so we add in the error message in the output.
