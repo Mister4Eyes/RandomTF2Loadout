@@ -212,7 +212,7 @@ namespace RandomTF2Loadout
 					"Spy"
 			};
 			string selectClass;
-			if (session != null && session.SelectClass != Session.RANDOM)
+			if (session == null || session.SelectClass != Session.RANDOM)
 			{
 				selectClass = classes[r.Next(classes.Length)];
 			}

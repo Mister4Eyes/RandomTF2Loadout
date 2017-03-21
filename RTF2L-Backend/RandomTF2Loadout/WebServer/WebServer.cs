@@ -43,30 +43,30 @@ namespace RandomTF2Loadout.WebServer
 			ThreadPool.QueueUserWorkItem((o) =>
 			{
 				Console.WriteLine("Webserver running...");
-				try
-				{
+				//try
+				//{
 					while (_listener.IsListening)
 					{
 						ThreadPool.QueueUserWorkItem((c) =>
 						{
 							Console.WriteLine("Request!");
 							var ctx = c as HttpListenerContext;
-							try
-							{
+							//try
+							//{
 								byte[] buf = _responderMethod(ctx);
 								ctx.Response.ContentLength64 = buf.Length;
 								ctx.Response.OutputStream.Write(buf, 0, buf.Length);
-							}
-							catch { } // suppress any exceptions
-							finally
-							{
-								// always close the stream
-								ctx.Response.OutputStream.Close();
-							}
+							//}
+							//catch { } // suppress any exceptions
+							//finally
+							//{
+							//	// always close the stream
+							//	ctx.Response.OutputStream.Close();
+							//}
 						}, _listener.GetContext());
 					}
-				}
-				catch { } // suppress any exceptions
+				//}
+				//catch { } // suppress any exceptions
 			});
 		}
 
