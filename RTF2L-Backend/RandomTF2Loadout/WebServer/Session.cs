@@ -32,6 +32,7 @@ namespace RandomTF2Loadout.WebServer
 		public Task UpdateTask = null;
 		public string playerName;
 		public byte SelectClass;
+		public bool clearErrors = false;
 
 		public Session(IPAddress ip)
 		{
@@ -120,6 +121,7 @@ namespace RandomTF2Loadout.WebServer
 				{
 					continue;
 				}
+
 				//Any items beginning with this are stock.
 				//Everyone has stock.
 				//EVERYONE!!!

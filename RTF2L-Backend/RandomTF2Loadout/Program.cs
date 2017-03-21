@@ -141,33 +141,51 @@ namespace RandomTF2Loadout
 
 		public string parseSwitches(string site, Session session)
 		{
-			//Short for Long Ass Pattern
-			const string LAP = @"#if\s+([\w\d-]+)\s*?\n([\w\W]*?)(?:#else\s*?\n([\w\W]*?))#endif";
-
-			//Matches the long ass pattern to the text
+			const string LAP = @"#if\s+([\w\d-]+)(?::([\w\d-]+))?\s*?\n([\w\W]*?)(?:#else\s*?\n([\w\W]*?))?#endif";
+			
 			MatchCollection matches = Regex.Matches(site, LAP);
 
 			/*
-			 *LAP has 3 groups
-			 * 1 This is the parameter to check..
-			 * 2 This is the first resultant text.
-			 * 3 (Optional) This is the optional failure text.
+			 * LAP has 4 groups
+			 * 1 This is the parameter to check.
+			 * 2 (Optional) Modifyer for the parameter
+			 * 3 This is the first resultant text.
+			 * 4 (Optional) This is the optional failure text.
 			 */
 			foreach(Match match in matches)
 			{
-				bool success;
+				bool success = false;
 				string sucString = match.Groups[2].Value;
 				string falString = (match.Groups[3].Success) ? match.Groups[3].Value : string.Empty;
-
-				//Varius ways of initializing success
-				switch (match.Groups[1].Value.Trim())
+				
+				switch (match.Groups[1].Value)
 				{
+					case "Error":
+						if(session != null)
+						{
+							string testError = match.Groups[2].Value;
+
+							//Checks if any of the errors have been seen in here.
+							foreach(string error in session.errors)
+							{
+								if (error.Equals(testError))
+								{
+									session.clearErrors = true;//This flag lets some code near the beginning know that errors were successfully pulled and can be clensed.
+									success = true;
+									goto loopSuccess;
+								}
+							}
+							success = false;
+							loopSuccess:;
+						}
+						break;
+
 					case "HasSession":
 						success = session != null;
 						break;
+
 					//Defaults to failure
 					default:
-						success = false;
 						break;
 				}
 				//Replaces statement with correct string and overrites old string
@@ -256,6 +274,7 @@ namespace RandomTF2Loadout
 			List<FormatKeyPair> keyPairs = new List<FormatKeyPair>();
 			const string pattern = @"{([\w\d-]+)(?::[\w\d-]+)?}";
 			keyPairs.Add(new FormatKeyPair("SessionInfo", SessionInformation));
+
 			//Searches for the moduels
 			MatchCollection mc = Regex.Matches(str, pattern);
 			foreach(Match m in mc)
@@ -352,8 +371,7 @@ namespace RandomTF2Loadout
 			hlc.Response.StatusCode = 404;
 			hlc.Response.ContentType = "text/html";
 			hlc.Response.ContentEncoding = Encoding.UTF8;
-
-			//Checks for 404 file. If not found then it gives a 500 for the 404
+			
 			if (fzf.Exists)
 			{
 				return Encoding.UTF8.GetBytes(FormatWebpage(File.ReadAllText(fzf.FullName), null));
@@ -485,6 +503,13 @@ namespace RandomTF2Loadout
 						break;
 					}
 				}
+			}
+
+			//This clear the errors after a successfull pulling of errors from another function.
+			if(currSession != null && currSession.clearErrors)
+			{
+				currSession.clearErrors = false;
+				currSession.errors.Clear();
 			}
 
 			switch (hlc.Request.HttpMethod)
