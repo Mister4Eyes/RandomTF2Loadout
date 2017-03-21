@@ -20,11 +20,11 @@ namespace RandomTF2Loadout
 	{
 		static void Main(string[] args) => new Program().Start();
 		bool DevMode = false;
-        bool running = false;
+		bool running = false;
 		string BaseDirectory;
 		string ClientDirectory;
 		Random r = new Random();
-        List<Session> sessions = new List<Session>();
+		List<Session> sessions = new List<Session>();
 
 		Dictionary<string, List<Item>> generalClassItems = GeneralFunctions.InitializeDictonary();
 
@@ -63,11 +63,11 @@ namespace RandomTF2Loadout
 					return "The Sticky Jumper";
 				case "SHOTGUN_SOLDIER":
 					return "SHOTGUN";
-                case "PIPEBOMBLAUNCHER":
-                    return "Stickybomb Launcher";
-                case "SHOTGUN_PYRO":
-                    return "SHOTGUN";
-                default:
+				case "PIPEBOMBLAUNCHER":
+					return "Stickybomb Launcher";
+				case "SHOTGUN_PYRO":
+					return "SHOTGUN";
+				default:
 					return rep;
 			}
 		}
@@ -92,20 +92,21 @@ namespace RandomTF2Loadout
 		}
 
 		public string ItemView(string str, string pickedClass, Session session)
-        {
-            Dictionary<string, List<Item>> classItems;
-            if (session == null)
-            {
-                classItems = generalClassItems;
-            }
-            else
-            {
-                lock (session.sessionClassItems)
-                {
-                    classItems = session.sessionClassItems;
-                }
-            }
-            List<Item> picked = getClassItems(pickedClass, classItems);
+		{
+			Dictionary<string, List<Item>> classItems;
+			if (session == null)
+			{
+				classItems = generalClassItems;
+			}
+			else
+			{
+				lock (session.sessionClassItems)
+				{
+					classItems = session.sessionClassItems;
+				}
+			}
+
+			List<Item> picked = getClassItems(pickedClass, classItems);
 			List<Item> prune = new List<Item>();
 			foreach (Item itm in picked)
 			{
@@ -138,45 +139,45 @@ namespace RandomTF2Loadout
 			}
 		}
 
-        public string parseSwitches(string site, Session session)
-        {
-            //Short for Long Ass Pattern
-            const string LAP = @"#if\s+([\w\d-]+)\s*?\n([\w\W]*?)(?:#else\s*?\n([\w\W]*?))#endif";
+		public string parseSwitches(string site, Session session)
+		{
+			//Short for Long Ass Pattern
+			const string LAP = @"#if\s+([\w\d-]+)\s*?\n([\w\W]*?)(?:#else\s*?\n([\w\W]*?))#endif";
 
-            //Matches the long ass pattern to the text
-            MatchCollection matches = Regex.Matches(site, LAP);
+			//Matches the long ass pattern to the text
+			MatchCollection matches = Regex.Matches(site, LAP);
 
-            /*
-             *LAP has 3 groups
-             * 1 This is the parameter to check..
-             * 2 This is the first resultant text.
-             * 3 (Optional) This is the optional failure text.
-             */
-            foreach(Match match in matches)
-            {
-                bool success;
-                string sucString = match.Groups[2].Value;
-                string falString = (match.Groups[3].Success) ? match.Groups[3].Value : string.Empty;
+			/*
+			 *LAP has 3 groups
+			 * 1 This is the parameter to check..
+			 * 2 This is the first resultant text.
+			 * 3 (Optional) This is the optional failure text.
+			 */
+			foreach(Match match in matches)
+			{
+				bool success;
+				string sucString = match.Groups[2].Value;
+				string falString = (match.Groups[3].Success) ? match.Groups[3].Value : string.Empty;
 
-                //Varius ways of initializing success
-                switch (match.Groups[1].Value.Trim())
-                {
-                    case "HasSession":
-                        success = session != null;
-                        break;
-                    //Defaults to failure
-                    default:
-                        success = false;
-                        break;
-                }
-                //Replaces statement with correct string and overrites old string
-                site = site.Replace(
-                    match.Value,
-                    (success) ? sucString : falString);
-            }
+				//Varius ways of initializing success
+				switch (match.Groups[1].Value.Trim())
+				{
+					case "HasSession":
+						success = session != null;
+						break;
+					//Defaults to failure
+					default:
+						success = false;
+						break;
+				}
+				//Replaces statement with correct string and overrites old string
+				site = site.Replace(
+					match.Value,
+					(success) ? sucString : falString);
+			}
 
-            return site;
-        }
+			return site;
+		}
 
 		public string FormatWebpage(string str, Session session)
 		{
@@ -192,36 +193,43 @@ namespace RandomTF2Loadout
 					"Sniper"	,
 					"Spy"
 			};
-
-			string selectClass = classes[r.Next(classes.Length)];
+			string selectClass;
+			if (session != null && session.SelectClass != Session.RANDOM)
+			{
+				selectClass = classes[r.Next(classes.Length)];
+			}
+			else
+			{
+				selectClass = classes[session.SelectClass];
+			}
 			return FormatWebpage(str, selectClass, session);
 		}
 
-        public string SessionInformation(string str, Session sesh)
-        {
-            switch (str)
-            {
-                case "Name":
-                    return sesh.playerName;
-                case "SteamID64":
-                    return sesh.steamID64;
-                default:
-                    return "";
-            }
-        }
-        public string FormatWebpage(string str, string selectClass, Session session)
-        {
-               DirectoryInfo moduelsDirectory = new DirectoryInfo(string.Format("{0}moduels", ClientDirectory));
-            List<string> staticNames = new List<string>();
+		public string SessionInformation(string str, Session sesh)
+		{
+			switch (str)
+			{
+				case "Name":
+					return sesh.playerName;
+				case "SteamID64":
+					return sesh.steamID64;
+				default:
+					return "";
+			}
+		}
+		public string FormatWebpage(string str, string selectClass, Session session)
+		{
+			   DirectoryInfo moduelsDirectory = new DirectoryInfo(string.Format("{0}moduels", ClientDirectory));
+			List<string> staticNames = new List<string>();
 
-            str = parseSwitches(str, session);
-            foreach(FileInfo fi in moduelsDirectory.EnumerateFiles())
-            {
-                staticNames.Add(fi.Name.Replace(".html", ""));
-            }
+			str = parseSwitches(str, session);
+			foreach(FileInfo fi in moduelsDirectory.EnumerateFiles())
+			{
+				staticNames.Add(fi.Name.Replace(".html", ""));
+			}
 
-            //Static custom functions
-            Dictionary<string, Func<string, string, Session, string>> dict = new Dictionary<string, Func<string, string, Session, string>>()
+			//Static custom functions
+			Dictionary<string, Func<string, string, Session, string>> dict = new Dictionary<string, Func<string, string, Session, string>>()
 			{
 				{ "primary",	ItemView		},
 				{ "secondary",	ItemView		},
@@ -232,49 +240,49 @@ namespace RandomTF2Loadout
 				{ "ItemView",	FormatItemView	}
 			};
 
-            //Removes proper things for the classes
-            switch (selectClass)
+			//Removes proper things for the classes
+			switch (selectClass)
 			{
 				case "Engineer":
 					dict.Remove("pda2");
 					dict.Remove("building");
-                    str = str.Replace("{pda2}", "").Replace("{building}", "");
+					str = str.Replace("{pda2}", "").Replace("{building}", "");
 					break;
 				case "Spy":
 					dict.Remove("pda");
-                    str = str.Replace("{pda}", "");
+					str = str.Replace("{pda}", "");
 					break;
 			}
-            List<FormatKeyPair> keyPairs = new List<FormatKeyPair>();
-            const string pattern = @"{([\w\d-]+)(?::[\w\d-]+)?}";
-            keyPairs.Add(new FormatKeyPair("SessionInfo", SessionInformation));
-            //Searches for the moduels
-            MatchCollection mc = Regex.Matches(str, pattern);
-            foreach(Match m in mc)
-            {
-                string name = m.Groups[1].Value;
+			List<FormatKeyPair> keyPairs = new List<FormatKeyPair>();
+			const string pattern = @"{([\w\d-]+)(?::[\w\d-]+)?}";
+			keyPairs.Add(new FormatKeyPair("SessionInfo", SessionInformation));
+			//Searches for the moduels
+			MatchCollection mc = Regex.Matches(str, pattern);
+			foreach(Match m in mc)
+			{
+				string name = m.Groups[1].Value;
 
-                //Adds in static custom functions
-                if (dict.ContainsKey(name))
-                {
-                    keyPairs.Add(new FormatKeyPair(name, FormatWebpage(dict[name](name, selectClass, session), selectClass, session)));
-                }
-                //Adds in static directory
-                else if (staticNames.Contains(name))
-                {
-                    keyPairs.Add(new FormatKeyPair(name, FormatWebpage(File.ReadAllText(string.Format(@"{0}\{1}.html", moduelsDirectory.FullName, name)), session)));
-                }
-            }
-            
-            return AdvancedFormat.Format(str, session, keyPairs.ToArray());
+				//Adds in static custom functions
+				if (dict.ContainsKey(name))
+				{
+					keyPairs.Add(new FormatKeyPair(name, FormatWebpage(dict[name](name, selectClass, session), selectClass, session)));
+				}
+				//Adds in static directory
+				else if (staticNames.Contains(name))
+				{
+					keyPairs.Add(new FormatKeyPair(name, FormatWebpage(File.ReadAllText(string.Format(@"{0}\{1}.html", moduelsDirectory.FullName, name)), session)));
+				}
+			}
+			
+			return AdvancedFormat.Format(str, session, keyPairs.ToArray());
 		}
 
 		public bool TryGetModuel(string path, out string data, Session session)
 		{
 			DirectoryInfo moduelsDirectory = new DirectoryInfo(string.Format("{0}moduels", ClientDirectory));
-            
-            //Checks if there is a moduel directory
-            if (moduelsDirectory.Exists)
+			
+			//Checks if there is a moduel directory
+			if (moduelsDirectory.Exists)
 			{
 				FileInfo moduelFile = new FileInfo(string.Format(@"{0}Moduels\{1}.html", ClientDirectory, path));
 
@@ -292,8 +300,8 @@ namespace RandomTF2Loadout
 		public bool TryGetStatic(HttpListenerContext hlc, Session sesh, out byte[] data)
 		{
 			DirectoryInfo staticDirectory = new DirectoryInfo(ClientDirectory + @"static");
-            
-            
+			
+			
 			//Checks if there is a static directory
 			if (staticDirectory.Exists)
 			{
@@ -350,201 +358,201 @@ namespace RandomTF2Loadout
 			{
 				return Encoding.UTF8.GetBytes(FormatWebpage(File.ReadAllText(fzf.FullName), null));
 			}
-            hlc.Response.StatusCode = 500;
+			hlc.Response.StatusCode = 500;
 			string none = "<head><title>500</title></head><body>The 404 does not exist.</body>";
 			return Encoding.UTF8.GetBytes(none);
 		}
 
-        public byte[] HttpFunctionGET(string url, HttpListenerContext hlc, Session sesh)
-        {
-            //Uri controller
-            switch (url)
-            {
-                case "/":
-                    return BaseSite(hlc, sesh);
+		public byte[] HttpFunctionGET(string url, HttpListenerContext hlc, Session sesh)
+		{
+			//Uri controller
+			switch (url)
+			{
+				case "/":
+					return BaseSite(hlc, sesh);
 
-                case "/PostTag":
+				case "/PostTag":
 
 
-                //Defaults to static data
-                default:
-                    byte[] data;
-                    string modDat;
-                    if (TryGetStatic(hlc, sesh, out data))
-                    {
-                        return data;
-                    }
-                    else if (DevMode && TryGetModuel(url, out modDat, sesh))
-                    {
-                        return Encoding.UTF8.GetBytes(modDat);
-                    }
-                    else
-                    {
-                        return FourZeroFour(hlc);
-                    }
-            }
-        }
+				//Defaults to static data
+				default:
+					byte[] data;
+					string modDat;
+					if (TryGetStatic(hlc, sesh, out data))
+					{
+						return data;
+					}
+					else if (DevMode && TryGetModuel(url, out modDat, sesh))
+					{
+						return Encoding.UTF8.GetBytes(modDat);
+					}
+					else
+					{
+						return FourZeroFour(hlc);
+					}
+			}
+		}
 
-        public void PostHandler(HttpListenerContext hlc, PostData pd, ref Session session)
-        {
-            for(int i = 0; i < pd.Length; ++i)
-            {
-                switch (pd[i])
-                {
-                    case "SteamID":
-                        {
-                            string steam64;
-                            if (UserURLToSteamID64.TryParseSteamID64(pd["SteamID"], out steam64))
-                            {
-                                lock (sessions)
-                                {
-                                    if (session == null)
-                                    {
-                                        Session sesh = new Session(hlc.Request.RemoteEndPoint.Address);
-                                        if (sesh.TrySetSteamID64(steam64))
-                                        {
-                                            sessions.Add(sesh);
-                                            session = sessions[sessions.Count - 1];
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        break;
+		public void PostHandler(HttpListenerContext hlc, PostData pd, ref Session session)
+		{
+			for(int i = 0; i < pd.Length; ++i)
+			{
+				switch (pd[i])
+				{
+					case "SteamID":
+						{
+							string steam64;
+							if (UserURLToSteamID64.TryParseSteamID64(pd["SteamID"], out steam64))
+							{
+								lock (sessions)
+								{
+									if (session == null)
+									{
+										Session sesh = new Session(hlc.Request.RemoteEndPoint.Address);
+										if (sesh.TrySetSteamID64(steam64))
+										{
+											sessions.Add(sesh);
+											session = sessions[sessions.Count - 1];
+										}
+									}
+								}
+							}
+						}
+						break;
 
-                    case "StopSession":
-                        {
-                            lock (sessions)
-                            {
-                                //Searches for sessions and removes the session.
-                                for(int j = 0; i < sessions.Count; ++j)
-                                {
-                                    if(session == sessions[i])
-                                    {
-                                        sessions.RemoveAt(i);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        break;
+					case "StopSession":
+						{
+							lock (sessions)
+							{
+								//Searches for sessions and removes the session.
+								for(int j = 0; i < sessions.Count; ++j)
+								{
+									if(session == sessions[i])
+									{
+										sessions.RemoveAt(i);
+										break;
+									}
+								}
+							}
+						}
+						break;
 
-                    case "ChangeID":
-                        if(session != null)
-                        {
-                            string steam64;
-                            if (UserURLToSteamID64.TryParseSteamID64(pd["SteamID"], out steam64))
-                            {
-                                session.TrySetSteamID64(steam64);
-                            }
-                        }
-                        break;
-                }
-            }
-        }
+					case "ChangeID":
+						if(session != null)
+						{
+							string steam64;
+							if (UserURLToSteamID64.TryParseSteamID64(pd["SteamID"], out steam64))
+							{
+								session.TrySetSteamID64(steam64);
+							}
+						}
+						break;
+				}
+			}
+		}
 
 		public byte[] HttpFunction(HttpListenerContext hlc)
 		{
 			string url = hlc.Request.Url.AbsolutePath;
 			Console.WriteLine("{0}\t{1}", url, hlc.Request.HttpMethod);
 
-            Session currSession = null;
-            lock (sessions)
-            {
-                for(int i = 0; i < sessions.Count; ++i)
-                {
-                    if (sessions[i].isSession(hlc.Request.RemoteEndPoint.Address))
-                    {
-                        sessions[i].Accessed();
-                        currSession = sessions[i];
-                        break;
-                    }
-                }
-            }
+			Session currSession = null;
+			lock (sessions)
+			{
+				for(int i = 0; i < sessions.Count; ++i)
+				{
+					if (sessions[i].isSession(hlc.Request.RemoteEndPoint.Address))
+					{
+						sessions[i].Accessed();
+						currSession = sessions[i];
+						break;
+					}
+				}
+			}
 
-            switch (hlc.Request.HttpMethod)
-            {
-                case "GET":
-                    return HttpFunctionGET(url, hlc, currSession);
+			switch (hlc.Request.HttpMethod)
+			{
+				case "GET":
+					return HttpFunctionGET(url, hlc, currSession);
 
-                case "POST":
-                    Console.WriteLine("--==  POST DATA  ==--");
+				case "POST":
+					Console.WriteLine("--==  POST DATA  ==--");
 
-                    string text;
+					string text;
 
-                    //Reads post data from 
-                    using (var reader = new StreamReader(hlc.Request.InputStream, hlc.Request.ContentEncoding))
-                    {
-                        text = reader.ReadToEnd();
-                        Console.WriteLine(text);
-                    }
+					//Reads post data from 
+					using (var reader = new StreamReader(hlc.Request.InputStream, hlc.Request.ContentEncoding))
+					{
+						text = reader.ReadToEnd();
+						Console.WriteLine(text);
+					}
 
-                    Console.WriteLine("--==END POST DATA==--");
+					Console.WriteLine("--==END POST DATA==--");
 
-                    PostHandler(hlc, new PostData(text), ref currSession);
-                    hlc.Response.Redirect(hlc.Request.Url.AbsolutePath);
-                    return new byte[0];
+					PostHandler(hlc, new PostData(text), ref currSession);
+					hlc.Response.Redirect(hlc.Request.Url.AbsolutePath);
+					return new byte[0];
 
-                default:
-                    return FourZeroFour(hlc);
-            }
+				default:
+					return FourZeroFour(hlc);
+			}
 
 		}
 		/*
 		public void Start()
 		{
 			string customSteamName = "Mister_4_Eyes";
-            Session session = new Session(IPAddress.Any);
-            
-            if (session.TrySetSteamID64(customSteamName))
-            {
-                Console.WriteLine("Steam id set successfully.");
-                session.UpdateTask.Wait();
-                foreach (string classKey in session.sessionClassItems.Keys)
-                {
-                    Console.WriteLine(classKey);
-                    foreach(Item item in session.sessionClassItems[classKey])
-                    {
-                        Console.WriteLine("\t{0}", getWeponName(item.name));
-                    }
-                }
-            }
+			Session session = new Session(IPAddress.Any);
+			
+			if (session.TrySetSteamID64(customSteamName))
+			{
+				Console.WriteLine("Steam id set successfully.");
+				session.UpdateTask.Wait();
+				foreach (string classKey in session.sessionClassItems.Keys)
+				{
+					Console.WriteLine(classKey);
+					foreach(Item item in session.sessionClassItems[classKey])
+					{
+						Console.WriteLine("\t{0}", getWeponName(item.name));
+					}
+				}
+			}
 
 			Console.ReadKey(true);
 		}
 		//*/
 
 		//*
-        public void UpdateSessions()
-        {
-            while (running)
-            {
-                //Setting "current time" to a static varible so all of the updates technically happen at the same time.
-                DateTime CurrTime = DateTime.UtcNow;
-                
-                lock (sessions)
-                {
-                    for(int i = 0; i < sessions.Count; ++i)
-                    {
-                        //Checks if session has expired
-                        if((CurrTime-sessions[i].lastAccessed).TotalHours < 1)
-                        {
-                            //Session has not expired. Checking if inventory update is needed
-                            if ((CurrTime - sessions[i].lastUpdate).TotalMinutes >= 10)
-                            {
-                                sessions[i].updateInventory();
-                            }
-                        }
-                        else
-                        {
-                            //Session has expired. Removing session.
-                            sessions.RemoveAt(i);
-                            --i;
-                        }
-                    }
-                }
-            }
-        }
+		public void UpdateSessions()
+		{
+			while (running)
+			{
+				//Setting "current time" to a static varible so all of the updates technically happen at the same time.
+				DateTime CurrTime = DateTime.UtcNow;
+				
+				lock (sessions)
+				{
+					for(int i = 0; i < sessions.Count; ++i)
+					{
+						//Checks if session has expired
+						if((CurrTime-sessions[i].lastAccessed).TotalHours < 1)
+						{
+							//Session has not expired. Checking if inventory update is needed
+							if ((CurrTime - sessions[i].lastUpdate).TotalMinutes >= 10)
+							{
+								sessions[i].updateInventory();
+							}
+						}
+						else
+						{
+							//Session has expired. Removing session.
+							sessions.RemoveAt(i);
+							--i;
+						}
+					}
+				}
+			}
+		}
 
 		public void Start()
 		{
@@ -561,31 +569,31 @@ namespace RandomTF2Loadout
 			foreach(Item i in WeaponGather.RemoveReskins(WeaponGather.getWeapons()))
 			{
 				foreach(string str in i.used_by_classes)
-                {
-                    GeneralFunctions.InitializeItems(i, generalClassItems);
+				{
+					GeneralFunctions.InitializeItems(i, generalClassItems);
 				}
 			}
 
 			WebServer.WebServer ws = new WebServer.WebServer(GeneralFunctions.ParseConfigFile("URIs").Split(','), HttpFunction);
 
-            //Startup
+			//Startup
 			ws.Run();
-            running = true;
+			running = true;
 
-            //Start session updates
-            Task upSess = new Task(UpdateSessions);
-            upSess.Start();
+			//Start session updates
+			Task upSess = new Task(UpdateSessions);
+			upSess.Start();
 
-            //User kill
-            Console.WriteLine("Press any key to stop.");
+			//User kill
+			Console.WriteLine("Press any key to stop.");
 			Console.ReadKey(true);
 
-            //Stop
+			//Stop
 			ws.Stop();
-            running = false;
+			running = false;
 
-            //Wait for this to stop
-            upSess.Wait();
+			//Wait for this to stop
+			upSess.Wait();
 		}
 		//*/
 	}
