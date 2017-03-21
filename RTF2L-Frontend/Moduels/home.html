@@ -19,22 +19,23 @@
 	</div>-->
 	<br>
 			<ul class="nav nav-tabs">
-				<li class="active"><a href="">Loadout</a></li>
-				<li><a href="#">Classes</a></li>
-				<li><a href="#">Menu 2</a></li>
-				<li><a href="#">Menu 3</a></li>
+				<li class="active"><a href=""><h5>Loadout</h5></a></li>
+				<li><a href="#"><h5>Classes</h5></a></li>
+				<li><a href="#"><h5>Menu 2</h5></a></li>
+				<li><a href="#"><h5>Menu 3</h5></a></li>
 			</ul>
 	<div align="center" class="panel panel-body" id="body">
 		<!-- Gui? goes here --->
 			{forms}
 		<br>
-		<h1>Your Loadout</h1>
 		<!--<img id="theImage" src="http://cdn.mos.cms.futurecdn.net/12b3163555c670c239abcd31455e3a00.png" class="img-responsive center-block"/>-->
 		<br>
 		#if HasSession
+		<h1>Your Loadout</h1>
+		<br>
 		{ItemView}
 		#else
-		<h1>Please enter your SteamID64</h1>
+		<h2>Please enter your Steam ID64</h2>
 		#endif
 	</div>
 	<footer>
