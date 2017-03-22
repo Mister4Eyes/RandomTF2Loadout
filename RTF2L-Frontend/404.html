@@ -15,35 +15,34 @@
 		<script src="js/base.js"></script>
 	</head>
 	<body id="pageContainer" class="body">
-	<div class="col-sm-3">
-		<audio id="audio" src="audio/Cheeki_Breeki_Hardbass_Anthem.mp3" autostart="false" ></audio>
-		<h6 onclick="playSound(); pauseAnthem();" style="color:#282828;" class="noselect">CHEEKI BREEKI</h6>
-	</div>
-	<div class="panel col-sm-6" align="center" id="background">
-		<h1>Random TF2 Loadouts</h1>
-		<div align="center" class="panel panel-heading" id="header">	
-			<a href="http://i.imgur.com/wKmhJbz.jpg" target="_blank" style="text-decoration:none;">
-				<audio id="anthem" src="audio/anthem.mp3" autostart="false" ></audio>
-				<button class="btn btn-lg" onclick="playAnthem(); pauseSound();" style="text-color:none;">Furries</button>
-			</a>
-			<button class="btn btn-lg" onclick="reload()">Refresh</button>
+		<div class="col-sm-2">
+			<audio id="audio" src="audio/Cheeki_Breeki_Hardbass_Anthem.mp3" autostart="false" ></audio>
+			<h6 onclick="fail()" style="color:#282828;" class="noselect">FUCK, IT DIDN'T WORK!</h6>
 		</div>
-		
-		<hr>
-		
-		<div align="center" class="panel panel-body" id="body">
-			<!-- Gui? goes here --->
-			<h1>What is "Content"?</h1>
-			<!--<img src="http://cdn.mos.cms.futurecdn.net/12b3163555c670c239abcd31455e3a00.png" />-->
-			<img src="img/404-planet.gif" class="img-responsive center-block"/>
+		<div class="panel col-sm-8" align="center" id="background">
+			<audio autoplay loop id="dog" onplay="playDog(); pauseAnthem();">
+				<source src="audio/dog.wav">
+			</audio>
+			<h1>Random TF2 Loadouts</h1>
+			<br>
+			<ul class="nav nav-tabs">
+				<!--<li><a href="home"><h5>Loadout</h5></a></li>
+				<li><a href="class"><h5>Classes</h5></a></li>-->
+				<li class="active" onclick="fail()"><a href="#"><h5>Error?</h5></a></li>
+				<li><a href="https://macdailynews.files.wordpress.com/2013/11/131119_frustration_fault.jpg" onclick="Navigate();"><h5>Delete System32</h5></a></li>
+			</ul>
+			<div class="panel panel-body rounded" id="body">
+				<h2 id="fail"></h2>
+				<h1>Nothing was found in this deep void...</h1>
+				<img src="img/404-planet.gif">
+				<br>
+			</div>
+			<footer>
+				<span>
+					<h5>MEME TIME&trade; &#0169 2016</h5>
+				</span>
+			</footer>
 		</div>
-		<footer>
-			<span>
-				<h5>MEME TIME&trade; &#0169 2016</h5>
-			</span>
-		</footer>
-	</div>
-	<div class="col-sm-3"></div>
-	
+		<div class="col-sm-2"></div>	
 	</body>
 </html>
