@@ -71,13 +71,13 @@ namespace RandomTF2Loadout
 					return rep;
 			}
 		}
+
 		//Seperates weapons from classes
 		public List<Item> getClassItems(string pickedClass, Dictionary<string, List<Item>> classItems)
 		{
 			List<Item> classItm = new List<Item>();
 			foreach(Item itm in classItems[pickedClass])
 			{
-				//Loops through classes
 				foreach(string usedClass in itm.used_by_classes)
 				{
 					if (usedClass.Equals(pickedClass))
@@ -148,7 +148,7 @@ namespace RandomTF2Loadout
 			/*
 			 * LAP has 4 groups
 			 * 1 This is the parameter to check.
-			 * 2 (Optional) Modifyer for the parameter
+			 * 2 (Optional) Modifier for the parameter
 			 * 3 This is the first resultant text.
 			 * 4 (Optional) This is the optional failure text.
 			 */
@@ -160,8 +160,19 @@ namespace RandomTF2Loadout
 				
 				switch (match.Groups[1].Value)
 				{
+					case "Session":
+						if(session != null && match.Groups[2].Success)
+						{
+							switch (match.Groups[2].Value)
+							{
+								case "Inventory-Pulled":
+									success = session.inventoryPulled;
+									break;
+							}
+						}
+						break;
 					case "Error":
-						if(session != null)
+						if(session != null && match.Groups[2].Success)
 						{
 							string testError = match.Groups[2].Value;
 
@@ -459,7 +470,7 @@ namespace RandomTF2Loadout
 						if(session != null)
 						{
 							string steam64;
-							if (UserURLToSteamID64.TryParseSteamID64(pd["SteamID"], out steam64))
+							if (UserURLToSteamID64.TryParseSteamID64(pd["ChangeID"], out steam64))
 							{
 								session.TrySetSteamID64(steam64);
 							}
@@ -470,7 +481,7 @@ namespace RandomTF2Loadout
 						{
 							if(session != null)
 							{
-								string intString = pd["CharicterID"];
+								string intString = pd["ChangeClass"];
 								byte output;
 								if(byte.TryParse(intString, out output))
 								{
@@ -635,7 +646,7 @@ namespace RandomTF2Loadout
 			running = false;
 
 			//Wait for this to stop
-			upSess.Wait();
+			while (!upSess.IsCompleted) ;
 		}
 		//*/
 	}

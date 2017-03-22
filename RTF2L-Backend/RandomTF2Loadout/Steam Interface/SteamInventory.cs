@@ -51,6 +51,7 @@ namespace RandomTF2Loadout.Steam_Interface
 	public class PlayerResult
 	{
 		public int status { get; set; }
+		public string statusDetail { get; set; }
 		public int num_backpack_slots { get; set; }
 		public List<PlayerItem> items { get; set; }
 	}

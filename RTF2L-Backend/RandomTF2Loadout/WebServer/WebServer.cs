@@ -43,8 +43,8 @@ namespace RandomTF2Loadout.WebServer
 			ThreadPool.QueueUserWorkItem((o) =>
 			{
 				Console.WriteLine("Webserver running...");
-				//try
-				//{
+				try
+				{
 					while (_listener.IsListening)
 					{
 						ThreadPool.QueueUserWorkItem((c) =>
@@ -65,8 +65,8 @@ namespace RandomTF2Loadout.WebServer
 							}
 						}, _listener.GetContext());
 					}
-				//}
-				//catch { } // suppress any exceptions
+				}
+				catch { } // suppress any exceptions
 			});
 		}
 

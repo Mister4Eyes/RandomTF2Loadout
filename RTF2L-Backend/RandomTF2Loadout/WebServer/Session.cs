@@ -33,9 +33,11 @@ namespace RandomTF2Loadout.WebServer
 		public string playerName;
 		public byte SelectClass;
 		public bool clearErrors = false;
+		public bool inventoryPulled { get; private set; }
 
 		public Session(IPAddress ip)
 		{
+			inventoryPulled = false;
 			ipHash = ipToBytes(ip);
 			Accessed();
 			sessionClassItems = GeneralFunctions.InitializeDictonary();
@@ -113,36 +115,53 @@ namespace RandomTF2Loadout.WebServer
 			//Therefor we can get away with directly setting the object.
 			PlayerRootObject pro = SteamInventory.GetInventory(steamID64);
 			playerName = SteamID64ToName.GetName(steamID64);
-			List<PlayerItem> playerWeapons = pro.result.items;
-			
-			//Goes through all possible items
-			foreach (Item i in WeaponGather.getWeapons())
-			{
-				if (i.name.Contains("Upgradeable"))
-				{
-					continue;
-				}
 
-				//Any items beginning with this are stock.
-				//Everyone has stock.
-				//EVERYONE!!!
-				if (i.name.Contains("TF_WEAPON_"))
+			//If a players inventory is not availible to the general public, permission to view the inventory is denied.
+			//
+			if (pro.result.statusDetail != null && pro.result.statusDetail.Equals("Permission denied"))
+			{
+				Console.WriteLine("Permission denied for {0}, Setting as default instead.", playerName);
+				errors.Add("Permission-Denied");
+				foreach (Item i in WeaponGather.RemoveReskins(WeaponGather.getWeapons()))
 				{
-					foreach (string str in i.used_by_classes)
-					{
-						tempClassItems[str].Add(i);
-					}
+					GeneralFunctions.InitializeItems(i, tempClassItems);
 				}
-				else
+			}
+			else
+			{
+				inventoryPulled = true;
+				List<PlayerItem> playerWeapons = pro.result.items;
+
+				//Goes through all possible items
+				foreach (Item i in WeaponGather.getWeapons())
 				{
-					foreach(PlayerItem pi in playerWeapons)
+					if (i.name.Contains("Upgradeable"))
 					{
-						if(pi.defindex == i.defindex)
+						continue;
+					}
+
+					//Any items beginning with this are stock.
+					//Everyone has stock.
+					//EVERYONE!!!
+					if (i.name.Contains("TF_WEAPON_"))
+					{
+						foreach (string str in i.used_by_classes)
 						{
-							GeneralFunctions.InitializeItems(i, tempClassItems);
+							tempClassItems[str].Add(i);
+						}
+					}
+					else
+					{
+						foreach (PlayerItem pi in playerWeapons)
+						{
+							if (pi.defindex == i.defindex)
+							{
+								GeneralFunctions.InitializeItems(i, tempClassItems);
+							}
 						}
 					}
 				}
+				Console.WriteLine("Got weapons for {0}", playerName);
 			}
 
 			lock (sessionClassItems)
