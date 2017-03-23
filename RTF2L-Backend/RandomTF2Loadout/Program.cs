@@ -578,29 +578,37 @@ namespace RandomTF2Loadout
 		//*
 		public void UpdateSessions()
 		{
+			DateTime CurrTime = DateTime.UtcNow;
 			while (running)
 			{
-				//Setting "current time" to a static varible so all of the updates technically happen at the same time.
-				DateTime CurrTime = DateTime.UtcNow;
-				
-				lock (sessions)
+				TimeSpan ts = DateTime.UtcNow - CurrTime;
+				//Waits for 10 minutes but can be cancelled at any time
+				if ((DateTime.UtcNow - CurrTime).Minutes >= 10)
 				{
-					for(int i = 0; i < sessions.Count; ++i)
+					//Setting "current time" to a static varible so all of the updates technically happen at the same time.
+					CurrTime = DateTime.UtcNow;
+					Console.WriteLine("Updating.");
+					lock (sessions)
 					{
-						//Checks if session has expired
-						if((CurrTime-sessions[i].lastAccessed).TotalHours < 1)
+						for (int i = 0; i < sessions.Count; ++i)
 						{
-							//Session has not expired. Checking if inventory update is needed
-							if ((CurrTime - sessions[i].lastUpdate).TotalMinutes >= 10)
+							//Checks if session has expired
+							Console.WriteLine("{0}'s session was last access {1} hours ago.",sessions[i].playerName,(CurrTime - sessions[i].lastAccessed).TotalHours);
+
+							if ((CurrTime - sessions[i].lastAccessed).Hours < 1)
 							{
-								sessions[i].updateInventory();
+								//Session has not expired. Checking if inventory update is needed
+								if ((CurrTime - sessions[i].lastUpdate).Minutes >= 10)
+								{
+									sessions[i].updateInventory();
+								}
 							}
-						}
-						else
-						{
-							//Session has expired. Removing session.
-							sessions.RemoveAt(i);
-							--i;
+							else
+							{
+								//Session has expired. Removing session.
+								sessions.RemoveAt(i);
+								--i;
+							}
 						}
 					}
 				}
