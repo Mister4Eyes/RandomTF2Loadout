@@ -97,21 +97,31 @@ namespace RandomTF2Loadout.General
 		{
 			string clientDirectoryName = ParseConfigFile("ClientDirectoryName");
 
+			return FindDirectory(clientDirectoryName);
+		}
+
+		public static string FindDirectory(string name, DirectoryInfo start = null)
+		{
+			if (start == null)
+			{
+				start = new DirectoryInfo(getBaseDirectory());
+			}
+
 			Queue<Tuple<bool, DirectoryInfo>> directoriesToBeChecked = new Queue<Tuple<bool, DirectoryInfo>>();
-			directoriesToBeChecked.Enqueue(new Tuple<bool, DirectoryInfo>(UP, new DirectoryInfo(getBaseDirectory())));
+			directoriesToBeChecked.Enqueue(new Tuple<bool, DirectoryInfo>(UP, start));
 
 			do
 			{
 				bool direction = directoriesToBeChecked.Peek().Item1;
 				DirectoryInfo checkDirectory = directoriesToBeChecked.Dequeue().Item2;
 
-				if(checkDirectory != null)
+				if (checkDirectory != null)
 				{
 					Console.WriteLine("{0}\t{1}", directoriesToBeChecked.Count + 1, checkDirectory.Name);
 					//Found directory
-					if (checkDirectory.Name.Equals(clientDirectoryName))
+					if (checkDirectory.Name.Equals(name))
 					{
-						return checkDirectory.FullName+"\\";
+						return checkDirectory.FullName + "\\";
 					}
 
 					if (direction)
@@ -133,25 +143,70 @@ namespace RandomTF2Loadout.General
 			return null;
 		}
 
+		public static string FindFile(string name, DirectoryInfo start = null)
+		{
+			if(start == null)
+			{
+				start = new DirectoryInfo(getBaseDirectory());
+			}
+
+			Queue<Tuple<bool, DirectoryInfo>> directoriesToBeChecked = new Queue<Tuple<bool, DirectoryInfo>>();
+			directoriesToBeChecked.Enqueue(new Tuple<bool, DirectoryInfo>(UP, start));
+
+			do
+			{
+				bool direction = directoriesToBeChecked.Peek().Item1;
+				DirectoryInfo checkDirectory = directoriesToBeChecked.Dequeue().Item2;
+
+				if (checkDirectory != null)
+				{
+					Console.WriteLine("{0}\t{1}", directoriesToBeChecked.Count + 1, checkDirectory.Name);
+					
+					foreach(FileInfo file in checkDirectory.EnumerateFiles())
+					{
+						if (file.Name.Equals(name))
+						{
+							return file.FullName;
+						}
+					}
+
+					if (direction)
+					{
+						addParent(ref directoriesToBeChecked, checkDirectory);
+						addChildren(ref directoriesToBeChecked, checkDirectory);
+					}
+					else
+					{
+						addChildren(ref directoriesToBeChecked, checkDirectory);
+					}
+				}
+			}
+			while (directoriesToBeChecked.Count > 0);
+
+			//I've checked everywhere! It can't be found
+			//To be honest, I would expect an out of memory exception before this happens.
+			//But a situaion like this could be possible...
+			return null;
+		}
+
+		//This function should be used sparingly in the first part of initialization due to how it searches for the config file.
+		//It should NOT be used in any sort of loop unless that loop is part of initialization and not while the web server is running.
 		public static string ParseConfigFile(string key)
 		{
-			string path = string.Format("{0}\\config.cfg", getBaseDirectory());
+			string path = FindFile("config.cfg");
+			
+			if(path == null)
+			{
+				throw new FileNotFoundException("Could not find the config file.");
+			}
+
 			Match m;
 			if (RegexFunctions.matches(File.ReadAllText(path), string.Format(@"{0}=(.+)",key), out m))
 			{
-				try
-				{
-					return m.Groups[1].Value.Trim();
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine(e.Message);
-					return null;
-				}
+				return m.Groups[1].Value.Trim();
 			}
 
-			//I feel that searching through the entire goddamn computer for 1 directory deserves an exception.
-			throw new DirectoryNotFoundException(string.Format("Could not find {0}."));
+			return null;
 		}
 	}
 }
