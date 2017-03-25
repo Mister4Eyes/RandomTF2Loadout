@@ -1,0 +1,87 @@
+#pageContainer {
+	/*background-image:url('.../static/img/Capture.png');
+	background-repeat:no-repeat;
+	background-position:top center;
+	text-align:center;
+	min-height:1023px;*/
+	background-color:#282828;
+}
+@font-face {
+	font-family: tf2build;
+	src: url('../fonts/tf2build.ttf');
+}
+.body{
+	font-family:tf2build;
+	overflow:auto;
+	
+}
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+	cursor: default;
+}
+#header{
+	background-color:#E2E1E1;
+}
+
+#body{
+	background-color:#CFCAC5;
+}
+.btn{
+	background-color:#A5A19D;
+}
+#background{
+	background-color:#A5A19D;
+}
+#theImage{
+	height:50%;
+	width: 50%;
+}
+
+#weapons{
+	/*height:128px;
+	width: 128px;
+	float:left;
+	position: relative;
+	top: 10px;*/	
+	margin-right:4px;
+	position:relative;
+	right:35%;
+	padding-top:10px;
+	width:200px;
+	border-style:solid;
+	border-width:2px;
+	border-color:white;
+}
+/*
+.loadout{
+	float:left;
+	margin-left: 10px;
+	text-align: center;
+}
+*/
+.character{
+	/*float: right;
+	margin-right: 10px;
+	margin-top: 100px;*/
+	float:right;
+	font-size:1pt;
+	margin:16pt;
+	text-align:center;
+}
+footer{
+	height:60px;
+	line-height: 90px;
+	background-color:#CFCAC5;
+	text-align:center;
+}
+span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
