@@ -8,7 +8,6 @@
 .body{
 	font-family:tf2build;
 	overflow:auto;
-	
 }
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
@@ -23,7 +22,6 @@
 #header{
 	background-color:#E2E1E1;
 }
-
 #body{
 	background-color:#CFCAC5;
 }
@@ -37,24 +35,22 @@
 	height:50%;
 	width: 50%;
 }
-
 #weapons{
 	margin-right:4px;
 	position:relative;
 	right:35%;
-	padding-top:10px;
+	height:200px;
 	width:200px;
+	border-radius:10px;
 	border-style:solid;
 	border-width:2px;
-	border-color:white;
+	border-color:#81776E;
+    transform: translate(-10%, 0%);
+}
+hr{
+	
 }
 .character{
-	/*float:center;
-	position:static;
-	font-size:1pt;
-	margin:16pt;
-	bottom:300px;
-	text-align:center;*/
 	margin:0 auto;
     position: absolute;
     top: 50%;
