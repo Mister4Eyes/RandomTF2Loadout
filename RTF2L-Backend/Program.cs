@@ -1,8 +1,5 @@
-﻿using HtmlAgilityPack;
-using RandomTF2Loadout;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
@@ -10,7 +7,6 @@ using RandomTF2Loadout.WebServer;
 using System.Net;
 using MimeTypes;
 using RandomTF2Loadout.Steam_Interface;
-using System.Threading;
 using System.Text.RegularExpressions;
 using RandomTF2Loadout.General;
 

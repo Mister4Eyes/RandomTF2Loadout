@@ -10,6 +10,87 @@ using RandomTF2Loadout.Steam_Interface;
 
 namespace RandomTF2Loadout.WebServer
 {
+	class SessionId
+	{
+		byte[] ipHash;
+		public SessionId(IPAddress ip)
+		{
+			ipHash = ipToBytes(ip);
+		}
+
+		#region OperatorOverloads
+		public static bool operator ==(SessionId sid1, SessionId sid2)
+		{
+			return sid1.Equals(sid2);
+		}
+
+		public static bool operator !=(SessionId sid1, SessionId sid2)
+		{
+			return !sid1.Equals(sid2);
+		}
+		#endregion
+
+
+		static byte[] ipToBytes(IPAddress ip)
+		{
+
+			using (MD5 md5 = MD5.Create())
+			{
+				//Here for storage. IP's are NOT stored in session and it allows for all ip's to have a fixed size.
+				return md5.ComputeHash(ip.GetAddressBytes());
+			}
+		}
+
+		//There has to be a hash code.
+		//However, int isn't big enough to contain an md5 hash so the equality operator uses the whole thing in order to prevent collision.
+		//And before you ask, no this is not cryptographicly secure.
+		//Hell, this isn't even meant to last until I get the browser to send cookies.
+		public override int GetHashCode()
+		{
+			return BitConverter.ToInt32(ipHash, 0);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if(obj is SessionId)
+			{
+				return EqualArrayComparison((obj as SessionId).ipHash);
+			}
+			else if (obj is Session)
+			{
+				return Equals((obj as Session).identification.ipHash);
+			}
+			else if (obj is byte[])
+			{
+				byte[] possHash = obj as byte[];
+
+				if (possHash.Length != ipHash.Length)
+				{
+					return false;
+				}
+
+				return EqualArrayComparison(possHash);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		private bool EqualArrayComparison(byte[] hash)
+		{
+			for (int i = 0; i < ipHash.Length; ++i)
+			{
+				if (ipHash[i] != hash[i])
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+	}
+
 	class Session
 	{
 		public const byte SCOUT		= 0;
@@ -23,7 +104,7 @@ namespace RandomTF2Loadout.WebServer
 		public const byte SPY		= 8;
 		public const byte RANDOM	= 9;
 
-		byte[] ipHash;
+		public SessionId identification;
 		public string steamID64 = null;
 		public DateTime lastAccessed;
 		public DateTime lastUpdate;
@@ -38,26 +119,15 @@ namespace RandomTF2Loadout.WebServer
 		public Session(IPAddress ip)
 		{
 			inventoryPulled = false;
-			ipHash = ipToBytes(ip);
+			identification = new SessionId(ip);
 			Accessed();
 			sessionClassItems = GeneralFunctions.InitializeDictonary();
 			SelectClass = 10;
 		}
-
-		static byte[] ipToBytes(IPAddress ip)
-		{
-
-			using (MD5 md5 = MD5.Create())
-			{
-				//Here for storage. IP's are NOT stored in session and it allows for all ip's to have a fixed size.
-				return md5.ComputeHash(ip.GetAddressBytes());
-			}
-		}
 		
 		public bool isSession(IPAddress ip)
 		{
-			byte[] tIpHash = ipToBytes(ip);
-			return GeneralFunctions.CompareBytes(ipHash, tIpHash);
+			return identification == new SessionId(ip);
 		}
 
 		public void Accessed()

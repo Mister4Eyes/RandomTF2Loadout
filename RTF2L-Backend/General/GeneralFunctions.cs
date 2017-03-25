@@ -2,11 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace RandomTF2Loadout.General
 {
@@ -67,6 +63,7 @@ namespace RandomTF2Loadout.General
 			//Nothing failed, therefor they are the same.
 			return true;
 		}
+
 		public static string getBaseDirectory()
 		{
 			FileInfo fi = new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
@@ -88,6 +85,7 @@ namespace RandomTF2Loadout.General
 				Console.WriteLine(e.Message);
 			}
 		}
+
 		static void addParent(ref Queue<Tuple<bool, DirectoryInfo>> queue, DirectoryInfo di)
 		{
 			queue.Enqueue(new Tuple<bool, DirectoryInfo>(UP, di.Parent));
@@ -117,8 +115,7 @@ namespace RandomTF2Loadout.General
 
 				if (checkDirectory != null)
 				{
-					Console.WriteLine("{0}\t{1}", directoriesToBeChecked.Count + 1, checkDirectory.Name);
-					//Found directory
+					//Found Directory
 					if (checkDirectory.Name.Equals(name))
 					{
 						return checkDirectory.FullName + "\\";
@@ -160,8 +157,7 @@ namespace RandomTF2Loadout.General
 
 				if (checkDirectory != null)
 				{
-					Console.WriteLine("{0}\t{1}", directoriesToBeChecked.Count + 1, checkDirectory.Name);
-					
+					//Found File
 					foreach(FileInfo file in checkDirectory.EnumerateFiles())
 					{
 						if (file.Name.Equals(name))
