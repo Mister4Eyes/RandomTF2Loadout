@@ -1,13 +1,13 @@
-<div class="col-sm-3">
+<div class="col-sm-2">
 	<audio id="audio" src="audio/Cheeki_Breeki_Hardbass_Anthem.mp3" autostart="false" ></audio>
 	<h6 onclick="playSound(); pauseAnthem();" style="color:#282828;" class="noselect">CHEEKI BREEKI</h6>
 </div>
-<div class="panel col-sm-6" align="center" id="background">
+<div class="panel col-sm-8" align="center" id="background">
 	<h1>Random TF2 Loadouts</h1>
-	<div align="center" class="panel panel-heading" id="header">
-		<!--<a href="">
+	<!--<div align="center" class="panel panel-heading" id="header">
+		<a href="">
 			<button class="btn btn-info btn-lg">CHEEKI BREEKI</button>
-		</a>-->		
+		</a>		
 		<a href="http://i.imgur.com/wKmhJbz.jpg" target="_blank" style="text-decoration:none;">
 			<audio id="anthem" src="audio/anthem.mp3" autostart="false" ></audio>
 			<button class="btn btn-lg" onclick="playAnthem(); pauseSound();" style="text-color:none;">Furries</button>
@@ -15,18 +15,26 @@
 		<a>
 			<button class="btn btn-lg" onclick="reload()">Refresh</button>
 		</a>
-	</div>
 	
+	</div>-->
 	<br>
-	
-	<div align="center" class="panel panel-body" id="body">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#"><h5>Loadout</h5></a></li>
+				<li><a href="class"><h5>Classes</h5></a></li>
+			</ul>
+	<div class="panel panel-body rounded" id="body">
 		<!-- Gui? goes here --->
-			{forms}
+		{forms}
 		<br>
-		<h1>Your Loadout</h1>
 		<!--<img id="theImage" src="http://cdn.mos.cms.futurecdn.net/12b3163555c670c239abcd31455e3a00.png" class="img-responsive center-block"/>-->
 		<br>
+		#if HasSession
+		<h1>Your Loadout</h1>
+		<br>
 		{ItemView}
+		#else
+		<h2>Please enter your Steam ID64</h2>
+		#endif
 	</div>
 	<footer>
 		<span>
@@ -34,5 +42,5 @@
 		</span>
 	</footer>
 </div>
-<div class="col-sm-3"></div>
+<div class="col-sm-2"></div>
 	
