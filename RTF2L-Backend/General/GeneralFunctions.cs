@@ -9,7 +9,7 @@ namespace RandomTF2Loadout.General
 {
 	class GeneralFunctions
 	{
-		const bool UP	= true; //I am a parent and I'm checking my parents
+		const bool UP	= true; //I am a parent and I'm checking my parents and children
 		const bool DOWN	= false;//I am a child and I'm checking my children
 
 		public static bool CookieCollectionHasValue(string value, CookieCollection cc)
