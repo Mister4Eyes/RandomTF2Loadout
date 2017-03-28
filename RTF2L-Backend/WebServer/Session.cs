@@ -12,25 +12,53 @@ namespace RandomTF2Loadout.WebServer
 {
 	class SessionId
 	{
-		byte[] ipHash;
+		int id = 0;
 		public SessionId(IPAddress ip)
 		{
-			ipHash = ipToBytes(ip);
+			id = BitConverter.ToInt32(ipToBytes(ip), 0);
 		}
+
+		public SessionId(CookieCollection cc, int[] usedIDs = null)
+		{
+			int parsedID;
+			if (cc["ID"] != null && int.TryParse(cc["ID"].Value, out parsedID))
+			{
+				id = parsedID;
+			}
+			else
+			{
+				if (usedIDs != null)
+				{
+					while (true)
+					{
+						id = new Random().Next();
+
+						foreach(int tid in usedIDs)
+						{
+							if(tid == id)
+							{
+								continue;
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+
 
 		#region OperatorOverloads
 		public static bool operator ==(SessionId sid1, SessionId sid2)
 		{
-			return sid1.Equals(sid2);
+			return sid1.GetHashCode() == sid2.GetHashCode();
 		}
 
 		public static bool operator !=(SessionId sid1, SessionId sid2)
 		{
-			return !sid1.Equals(sid2);
+			return !(sid1 == sid2);
 		}
 		#endregion
-
-
+		
 		static byte[] ipToBytes(IPAddress ip)
 		{
 
@@ -41,53 +69,25 @@ namespace RandomTF2Loadout.WebServer
 			}
 		}
 
-		//There has to be a hash code.
-		//However, int isn't big enough to contain an md5 hash so the equality operator uses the whole thing in order to prevent collision.
-		//And before you ask, no this is not cryptographicly secure.
-		//Hell, this isn't even meant to last until I get the browser to send cookies.
 		public override int GetHashCode()
 		{
-			return BitConverter.ToInt32(ipHash, 0);
+			return id;
 		}
 
 		public override bool Equals(object obj)
 		{
 			if(obj is SessionId)
 			{
-				return EqualArrayComparison((obj as SessionId).ipHash);
+				return (obj as SessionId).GetHashCode() == id;
 			}
 			else if (obj is Session)
 			{
-				return Equals((obj as Session).identification.ipHash);
-			}
-			else if (obj is byte[])
-			{
-				byte[] possHash = obj as byte[];
-
-				if (possHash.Length != ipHash.Length)
-				{
-					return false;
-				}
-
-				return EqualArrayComparison(possHash);
+				return Equals((obj as Session).identification);
 			}
 			else
 			{
 				return false;
 			}
-		}
-
-		private bool EqualArrayComparison(byte[] hash)
-		{
-			for (int i = 0; i < ipHash.Length; ++i)
-			{
-				if (ipHash[i] != hash[i])
-				{
-					return false;
-				}
-			}
-
-			return true;
 		}
 	}
 
@@ -104,6 +104,7 @@ namespace RandomTF2Loadout.WebServer
 		public const byte SPY		= 8;
 		public const byte RANDOM	= 9;
 
+		public CookieCollection cookies;
 		public SessionId identification;
 		public string steamID64 = null;
 		public DateTime lastAccessed;
@@ -115,19 +116,30 @@ namespace RandomTF2Loadout.WebServer
 		public byte SelectClass;
 		public bool clearErrors = false;
 		public bool inventoryPulled { get; private set; }
-
-		public Session(IPAddress ip)
-		{
-			inventoryPulled = false;
-			identification = new SessionId(ip);
-			Accessed();
-			sessionClassItems = GeneralFunctions.InitializeDictonary();
-			SelectClass = 10;
-		}
 		
-		public bool isSession(IPAddress ip)
+		public Session(SessionId sid, CookieCollection cc)
 		{
-			return identification == new SessionId(ip);
+			cookies = cc;
+			identification = sid;
+			
+			if(cookies["ID"] == null)
+			{
+				cookies.Add(new Cookie("ID", sid.GetHashCode().ToString()));
+			}
+			if(cookies["steamdID"] != null)
+			{
+				TrySetSteamID64(cookies["steamID"].Value);
+			}
+		}
+
+		public bool isSession(Session sesh)
+		{
+			return isSession(sesh.identification);
+		}
+
+		public bool isSession(SessionId seshId)
+		{
+			return identification == seshId;
 		}
 
 		public void Accessed()
@@ -139,14 +151,25 @@ namespace RandomTF2Loadout.WebServer
 		//Once done. It sets some other important varibles.
 		public bool TrySetSteamID64(string SteamID64)
 		{
-			bool status = UserURLToSteamID64.TryParseSteamID64(SteamID64, out steamID64);
+			string steamTemp;
 			
 			//Test for status failure.
-			if (!status)
+			if (!UserURLToSteamID64.TryParseSteamID64(SteamID64, out steamTemp))
 			{
 				errors.Add("Failure-To-Set-SteamID64");
 				return false;
 			}
+
+			if(cookies["SteamID"] == null)
+			{
+				cookies.Add(new Cookie("SteamID", steamTemp));
+			}
+			else
+			{
+				cookies["SteamID"].Value = steamTemp;
+			}
+
+			steamID64 = steamTemp;
 			updateInventory();
 			return true;
 		}
@@ -233,8 +256,14 @@ namespace RandomTF2Loadout.WebServer
 				}
 				Console.WriteLine("Got weapons for {0}", playerName);
 			}
-
-			lock (sessionClassItems)
+			if(sessionClassItems != null)
+			{
+				lock (sessionClassItems)
+				{
+					sessionClassItems = tempClassItems;
+				}
+			}
+			else
 			{
 				sessionClassItems = tempClassItems;
 			}

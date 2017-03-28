@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace RandomTF2Loadout.General
@@ -11,6 +12,24 @@ namespace RandomTF2Loadout.General
 		const bool UP	= true; //I am a parent and I'm checking my parents
 		const bool DOWN	= false;//I am a child and I'm checking my children
 
+		public static bool CookieCollectionHasValue(string value, CookieCollection cc)
+		{
+			Cookie c;//Not used
+			return TryGetCookieValue(value, cc, out c);
+		}
+		public static bool TryGetCookieValue(string value, CookieCollection cookieCollection, out Cookie cookie)
+		{
+			cookie = null;
+			foreach(Cookie c in cookieCollection)
+			{
+				if (c.Name.Equals(value))
+				{
+					cookie = c;
+					return true;
+				}
+			}
+			return false;
+		}
 		public static void InitializeItems(Item i, Dictionary<string, List<Item>> tempClassItems)
 		{
 			foreach (string str in i.used_by_classes)

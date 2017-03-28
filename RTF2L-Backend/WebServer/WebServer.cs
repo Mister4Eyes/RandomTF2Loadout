@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Text;
 using System.Threading;
 /* 
  * Made by Francis Bio
@@ -51,16 +52,22 @@ namespace RandomTF2Loadout.WebServer
 						{
 							Console.WriteLine("Request!");
 							var ctx = c as HttpListenerContext;
+							string errorMessage = "";
 							try
 							{
 								byte[] buf = _responderMethod(ctx);
 								ctx.Response.ContentLength64 = buf.Length;
 								ctx.Response.OutputStream.Write(buf, 0, buf.Length);
 							}
-							catch { } // suppress any exceptions
+							catch (Exception e) { Console.WriteLine(e); errorMessage = e.ToString(); } // suppress any exceptions
 							finally
 							{
 								// always close the stream
+
+								ctx.Response.StatusCode = 500;
+								string none = string.Format("<head><title>500</title></head><body>{0}</body>", errorMessage);
+								byte[] buffer = Encoding.UTF8.GetBytes(none);
+								ctx.Response.OutputStream.Write(buffer, 0, buffer.Length);
 								ctx.Response.OutputStream.Close();
 							}
 						}, _listener.GetContext());
