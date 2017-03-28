@@ -10,6 +10,87 @@ using RandomTF2Loadout.Steam_Interface;
 
 namespace RandomTF2Loadout.WebServer
 {
+	class SessionId
+	{
+		int id = 0;
+		public SessionId(IPAddress ip)
+		{
+			id = BitConverter.ToInt32(ipToBytes(ip), 0);
+		}
+
+		public SessionId(CookieCollection cc, int[] usedIDs = null)
+		{
+			int parsedID;
+			if (cc["ID"] != null && int.TryParse(cc["ID"].Value, out parsedID))
+			{
+				id = parsedID;
+			}
+			else
+			{
+				if (usedIDs != null)
+				{
+					while (true)
+					{
+						id = new Random().Next();
+
+						foreach(int tid in usedIDs)
+						{
+							if(tid == id)
+							{
+								continue;
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+
+
+		#region OperatorOverloads
+		public static bool operator ==(SessionId sid1, SessionId sid2)
+		{
+			return sid1.GetHashCode() == sid2.GetHashCode();
+		}
+
+		public static bool operator !=(SessionId sid1, SessionId sid2)
+		{
+			return !(sid1 == sid2);
+		}
+		#endregion
+		
+		static byte[] ipToBytes(IPAddress ip)
+		{
+
+			using (MD5 md5 = MD5.Create())
+			{
+				//Here for storage. IP's are NOT stored in session and it allows for all ip's to have a fixed size.
+				return md5.ComputeHash(ip.GetAddressBytes());
+			}
+		}
+
+		public override int GetHashCode()
+		{
+			return id;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if(obj is SessionId)
+			{
+				return (obj as SessionId).GetHashCode() == id;
+			}
+			else if (obj is Session)
+			{
+				return Equals((obj as Session).identification);
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+
 	class Session
 	{
 		public const byte SCOUT		= 0;
@@ -23,7 +104,8 @@ namespace RandomTF2Loadout.WebServer
 		public const byte SPY		= 8;
 		public const byte RANDOM	= 9;
 
-		byte[] ipHash;
+		public CookieCollection cookies;
+		public SessionId identification;
 		public string steamID64 = null;
 		public DateTime lastAccessed;
 		public DateTime lastUpdate;
@@ -34,30 +116,30 @@ namespace RandomTF2Loadout.WebServer
 		public byte SelectClass;
 		public bool clearErrors = false;
 		public bool inventoryPulled { get; private set; }
-
-		public Session(IPAddress ip)
+		
+		public Session(SessionId sid, CookieCollection cc)
 		{
-			inventoryPulled = false;
-			ipHash = ipToBytes(ip);
-			Accessed();
-			sessionClassItems = GeneralFunctions.InitializeDictonary();
-			SelectClass = 10;
-		}
-
-		static byte[] ipToBytes(IPAddress ip)
-		{
-
-			using (MD5 md5 = MD5.Create())
+			cookies = cc;
+			identification = sid;
+			
+			if(cookies["ID"] == null)
 			{
-				//Here for storage. IP's are NOT stored in session and it allows for all ip's to have a fixed size.
-				return md5.ComputeHash(ip.GetAddressBytes());
+				cookies.Add(new Cookie("ID", sid.GetHashCode().ToString()));
+			}
+			if(cookies["steamdID"] != null)
+			{
+				TrySetSteamID64(cookies["steamID"].Value);
 			}
 		}
-		
-		public bool isSession(IPAddress ip)
+
+		public bool isSession(Session sesh)
 		{
-			byte[] tIpHash = ipToBytes(ip);
-			return GeneralFunctions.CompareBytes(ipHash, tIpHash);
+			return isSession(sesh.identification);
+		}
+
+		public bool isSession(SessionId seshId)
+		{
+			return identification == seshId;
 		}
 
 		public void Accessed()
@@ -69,14 +151,25 @@ namespace RandomTF2Loadout.WebServer
 		//Once done. It sets some other important varibles.
 		public bool TrySetSteamID64(string SteamID64)
 		{
-			bool status = UserURLToSteamID64.TryParseSteamID64(SteamID64, out steamID64);
+			string steamTemp;
 			
 			//Test for status failure.
-			if (!status)
+			if (!UserURLToSteamID64.TryParseSteamID64(SteamID64, out steamTemp))
 			{
 				errors.Add("Failure-To-Set-SteamID64");
 				return false;
 			}
+
+			if(cookies["SteamID"] == null)
+			{
+				cookies.Add(new Cookie("SteamID", steamTemp));
+			}
+			else
+			{
+				cookies["SteamID"].Value = steamTemp;
+			}
+
+			steamID64 = steamTemp;
 			updateInventory();
 			return true;
 		}
@@ -163,8 +256,14 @@ namespace RandomTF2Loadout.WebServer
 				}
 				Console.WriteLine("Got weapons for {0}", playerName);
 			}
-
-			lock (sessionClassItems)
+			if(sessionClassItems != null)
+			{
+				lock (sessionClassItems)
+				{
+					sessionClassItems = tempClassItems;
+				}
+			}
+			else
 			{
 				sessionClassItems = tempClassItems;
 			}

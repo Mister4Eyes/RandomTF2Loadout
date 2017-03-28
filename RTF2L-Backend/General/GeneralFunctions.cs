@@ -2,19 +2,34 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
+using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace RandomTF2Loadout.General
 {
 	class GeneralFunctions
 	{
-		const bool UP	= true; //I am a parent and I'm checking my parents
+		const bool UP	= true; //I am a parent and I'm checking my parents and children
 		const bool DOWN	= false;//I am a child and I'm checking my children
 
+		public static bool CookieCollectionHasValue(string value, CookieCollection cc)
+		{
+			Cookie c;//Not used
+			return TryGetCookieValue(value, cc, out c);
+		}
+		public static bool TryGetCookieValue(string value, CookieCollection cookieCollection, out Cookie cookie)
+		{
+			cookie = null;
+			foreach(Cookie c in cookieCollection)
+			{
+				if (c.Name.Equals(value))
+				{
+					cookie = c;
+					return true;
+				}
+			}
+			return false;
+		}
 		public static void InitializeItems(Item i, Dictionary<string, List<Item>> tempClassItems)
 		{
 			foreach (string str in i.used_by_classes)
@@ -63,10 +78,10 @@ namespace RandomTF2Loadout.General
 					return false;
 				}
 			}
-
-			//Nothing failed, therefor they are the same.
+			
 			return true;
 		}
+
 		public static string getBaseDirectory()
 		{
 			FileInfo fi = new FileInfo(System.Reflection.Assembly.GetEntryAssembly().Location);
@@ -88,6 +103,7 @@ namespace RandomTF2Loadout.General
 				Console.WriteLine(e.Message);
 			}
 		}
+
 		static void addParent(ref Queue<Tuple<bool, DirectoryInfo>> queue, DirectoryInfo di)
 		{
 			queue.Enqueue(new Tuple<bool, DirectoryInfo>(UP, di.Parent));
@@ -117,8 +133,7 @@ namespace RandomTF2Loadout.General
 
 				if (checkDirectory != null)
 				{
-					Console.WriteLine("{0}\t{1}", directoriesToBeChecked.Count + 1, checkDirectory.Name);
-					//Found directory
+					//Found Directory
 					if (checkDirectory.Name.Equals(name))
 					{
 						return checkDirectory.FullName + "\\";
@@ -160,8 +175,7 @@ namespace RandomTF2Loadout.General
 
 				if (checkDirectory != null)
 				{
-					Console.WriteLine("{0}\t{1}", directoriesToBeChecked.Count + 1, checkDirectory.Name);
-					
+					//Found File
 					foreach(FileInfo file in checkDirectory.EnumerateFiles())
 					{
 						if (file.Name.Equals(name))

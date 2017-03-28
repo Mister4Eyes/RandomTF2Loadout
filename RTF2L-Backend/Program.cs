@@ -1,8 +1,5 @@
-﻿using HtmlAgilityPack;
-using RandomTF2Loadout;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
@@ -10,7 +7,6 @@ using RandomTF2Loadout.WebServer;
 using System.Net;
 using MimeTypes;
 using RandomTF2Loadout.Steam_Interface;
-using System.Threading;
 using System.Text.RegularExpressions;
 using RandomTF2Loadout.General;
 
@@ -24,6 +20,8 @@ namespace RandomTF2Loadout
 		string BaseDirectory;
 		string ClientDirectory;
 		Random r = new Random();
+
+		List<int> ids = new List<int>();
 		List<Session> sessions = new List<Session>();
 
 		Dictionary<string, List<Item>> generalClassItems = GeneralFunctions.InitializeDictonary();
@@ -100,9 +98,16 @@ namespace RandomTF2Loadout
 			}
 			else
 			{
-				lock (session.sessionClassItems)
+				if(session.inventoryPulled)
 				{
-					classItems = session.sessionClassItems;
+					lock (session.sessionClassItems)
+					{
+						classItems = session.sessionClassItems;
+					}
+				}
+				else
+				{
+					classItems = generalClassItems;
 				}
 			}
 
@@ -369,6 +374,7 @@ namespace RandomTF2Loadout
 
 			if (fzf.Exists)
 			{
+				WaitForItemPull(sesh);
 				return Encoding.UTF8.GetBytes(FormatWebpage(File.ReadAllText(fzf.FullName), sesh));
 			}
 			return FourZeroFour(hlc);
@@ -376,19 +382,19 @@ namespace RandomTF2Loadout
 
 		public byte[] FourZeroFour(HttpListenerContext hlc)
 		{
-			FileInfo fzf = new FileInfo(string.Format(@"{0}404.html", ClientDirectory));
-
-			//The list of response codes
 			hlc.Response.StatusCode = 404;
 			hlc.Response.ContentType = "text/html";
 			hlc.Response.ContentEncoding = Encoding.UTF8;
-			
+
+			FileInfo fzf = new FileInfo(string.Format(@"{0}404.html", ClientDirectory));
 			if (fzf.Exists)
 			{
 				return Encoding.UTF8.GetBytes(FormatWebpage(File.ReadAllText(fzf.FullName), null));
 			}
+
+			//Looks like someone forgot to make a 404 for the website.
 			hlc.Response.StatusCode = 500;
-			string none = "<head><title>500</title></head><body>The 404 does not exist.</body>";
+			const string none = "<head><title>500</title></head><body>The 404 does not exist.</body>";
 			return Encoding.UTF8.GetBytes(none);
 		}
 
@@ -422,7 +428,7 @@ namespace RandomTF2Loadout
 			}
 		}
 
-		public void PostHandler(HttpListenerContext hlc, PostData pd, ref Session session)
+		public void PostHandler(HttpListenerContext hlc, PostData pd, ref Session session, SessionId sid)
 		{
 			for(int i = 0; i < pd.Length; ++i)
 			{
@@ -437,12 +443,8 @@ namespace RandomTF2Loadout
 								{
 									if (session == null)
 									{
-										Session sesh = new Session(hlc.Request.RemoteEndPoint.Address);
-										if (sesh.TrySetSteamID64(steam64))
-										{
-											sessions.Add(sesh);
-											session = sessions[sessions.Count - 1];
-										}
+										session = InitializeSession(sid, hlc.Request.Cookies);
+										session.TrySetSteamID64(steam64);
 									}
 								}
 							}
@@ -453,15 +455,10 @@ namespace RandomTF2Loadout
 						{
 							lock (sessions)
 							{
-								//Searches for sessions and removes the session.
-								for(int j = 0; i < sessions.Count; ++j)
-								{
-									if(session == sessions[i])
-									{
-										sessions.RemoveAt(i);
-										break;
-									}
-								}
+								sessions.Remove(session);
+
+								//Just in case any more comes in requiring a session to be active.
+								session = null;
 							}
 						}
 						break;
@@ -479,16 +476,18 @@ namespace RandomTF2Loadout
 
 					case "ChangeClass":
 						{
-							if(session != null)
+							if(session == null)
 							{
-								string intString = pd["ChangeClass"];
-								byte output;
-								if(byte.TryParse(intString, out output))
+								session = InitializeSession(sid, hlc.Request.Cookies);
+							}
+
+							string intString = pd["ChangeClass"];
+							byte output;
+							if (byte.TryParse(intString, out output))
+							{
+								if (0 <= output && 9 >= output)
 								{
-									if (0 <= output && 9 >= output)
-									{
-										session.SelectClass = output;
-									}
+									session.SelectClass = output;
 								}
 							}
 						}
@@ -497,17 +496,59 @@ namespace RandomTF2Loadout
 			}
 		}
 
+		private Session InitializeSession(SessionId sid, CookieCollection cc)
+		{
+			Session sesh = new Session(sid, cc);
+			sessions.Add(sesh);
+			lock (ids)
+			{
+				ids.Add(sesh.identification.GetHashCode());
+			}
+
+			return sesh;
+		}
+
+		public void DisplayCookies(CookieCollection cc)
+		{
+			if (DevMode)
+			{
+				Console.WriteLine("--==  Cookies  ==--");
+				foreach (Cookie c in cc)
+				{
+					Console.WriteLine(c.ToString());
+				}
+				Console.WriteLine("--==End Cookies==--");
+			}
+		}
+
+		public void WaitForItemPull(Session sesh)
+		{
+			if(sesh != null && sesh.UpdateTask != null)
+			{
+				sesh.UpdateTask.Wait();
+			}
+		}
+
 		public byte[] HttpFunction(HttpListenerContext hlc)
 		{
 			string url = hlc.Request.Url.AbsolutePath;
 			Console.WriteLine("{0}\t{1}", url, hlc.Request.HttpMethod);
 
+			DisplayCookies(hlc.Request.Cookies);
 			Session currSession = null;
+			SessionId sid;
+
+			lock (ids)
+			{
+				sid = new SessionId(hlc.Request.Cookies, ids.ToArray());
+			}
+
+
 			lock (sessions)
 			{
 				for(int i = 0; i < sessions.Count; ++i)
 				{
-					if (sessions[i].isSession(hlc.Request.RemoteEndPoint.Address))
+					if (sessions[i].isSession(sid))
 					{
 						sessions[i].Accessed();
 						currSession = sessions[i];
@@ -516,6 +557,7 @@ namespace RandomTF2Loadout
 				}
 			}
 
+			
 			//This clear the errors after a successfull pulling of errors from another function.
 			if(currSession != null && currSession.clearErrors)
 			{
@@ -523,28 +565,51 @@ namespace RandomTF2Loadout
 				currSession.errors.Clear();
 			}
 
+			if (currSession != null)
+			{
+				hlc.Response.Cookies = currSession.cookies;
+			}
+
+
 			switch (hlc.Request.HttpMethod)
 			{
 				case "GET":
 					return HttpFunctionGET(url, hlc, currSession);
 
 				case "POST":
-					Console.WriteLine("--==  POST DATA  ==--");
-
-					string text;
-
-					//Reads post data from 
-					using (var reader = new StreamReader(hlc.Request.InputStream, hlc.Request.ContentEncoding))
 					{
-						text = reader.ReadToEnd();
-						Console.WriteLine(text);
+						if (DevMode)
+						{
+							Console.WriteLine("--==  POST DATA  ==--");
+						}
+
+						string text;
+
+						//Reads post data from 
+						using (var reader = new StreamReader(hlc.Request.InputStream, hlc.Request.ContentEncoding))
+						{
+							text = reader.ReadToEnd();
+
+							if (DevMode)
+							{
+								Console.WriteLine(text);
+							}
+						}
+
+						if (DevMode)
+						{
+							Console.WriteLine("--==END POST DATA==--");
+						}
+
+						PostHandler(hlc, new PostData(text), ref currSession, sid);
+						hlc.Response.Redirect(hlc.Request.Url.AbsolutePath);
+
+						if (currSession != null)
+						{
+							hlc.Response.Cookies = currSession.cookies;
+						}
+						return new byte[0];
 					}
-
-					Console.WriteLine("--==END POST DATA==--");
-
-					PostHandler(hlc, new PostData(text), ref currSession);
-					hlc.Response.Redirect(hlc.Request.Url.AbsolutePath);
-					return new byte[0];
 
 				default:
 					return FourZeroFour(hlc);
@@ -606,6 +671,10 @@ namespace RandomTF2Loadout
 							else
 							{
 								//Session has expired. Removing session.
+								lock (ids)
+								{
+									ids.Remove(sessions[i].GetHashCode());
+								}
 								sessions.RemoveAt(i);
 								--i;
 							}
