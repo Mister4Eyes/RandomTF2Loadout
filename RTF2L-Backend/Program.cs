@@ -510,12 +510,15 @@ namespace RandomTF2Loadout
 
 		public void DisplayCookies(CookieCollection cc)
 		{
-			Console.WriteLine("--==  Cookies  ==--");
-			foreach(Cookie c in cc)
+			if (DevMode)
 			{
-				Console.WriteLine(c.ToString());
+				Console.WriteLine("--==  Cookies  ==--");
+				foreach (Cookie c in cc)
+				{
+					Console.WriteLine(c.ToString());
+				}
+				Console.WriteLine("--==End Cookies==--");
 			}
-			Console.WriteLine("--==End Cookies==--");
 		}
 
 		public void WaitForItemPull(Session sesh)
@@ -574,27 +577,39 @@ namespace RandomTF2Loadout
 					return HttpFunctionGET(url, hlc, currSession);
 
 				case "POST":
-					Console.WriteLine("--==  POST DATA  ==--");
-
-					string text;
-
-					//Reads post data from 
-					using (var reader = new StreamReader(hlc.Request.InputStream, hlc.Request.ContentEncoding))
 					{
-						text = reader.ReadToEnd();
-						Console.WriteLine(text);
+						if (DevMode)
+						{
+							Console.WriteLine("--==  POST DATA  ==--");
+						}
+
+						string text;
+
+						//Reads post data from 
+						using (var reader = new StreamReader(hlc.Request.InputStream, hlc.Request.ContentEncoding))
+						{
+							text = reader.ReadToEnd();
+
+							if (DevMode)
+							{
+								Console.WriteLine(text);
+							}
+						}
+
+						if (DevMode)
+						{
+							Console.WriteLine("--==END POST DATA==--");
+						}
+
+						PostHandler(hlc, new PostData(text), ref currSession, sid);
+						hlc.Response.Redirect(hlc.Request.Url.AbsolutePath);
+
+						if (currSession != null)
+						{
+							hlc.Response.Cookies = currSession.cookies;
+						}
+						return new byte[0];
 					}
-
-					Console.WriteLine("--==END POST DATA==--");
-
-					PostHandler(hlc, new PostData(text), ref currSession, sid);
-					hlc.Response.Redirect(hlc.Request.Url.AbsolutePath);
-
-					if (currSession != null)
-					{
-						hlc.Response.Cookies = currSession.cookies;
-					}
-					return new byte[0];
 
 				default:
 					return FourZeroFour(hlc);
