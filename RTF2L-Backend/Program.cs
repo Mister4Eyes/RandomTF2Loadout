@@ -374,6 +374,7 @@ namespace RandomTF2Loadout
 
 			if (fzf.Exists)
 			{
+				WaitForItemPull(sesh);
 				return Encoding.UTF8.GetBytes(FormatWebpage(File.ReadAllText(fzf.FullName), sesh));
 			}
 			return FourZeroFour(hlc);
@@ -515,6 +516,14 @@ namespace RandomTF2Loadout
 				Console.WriteLine(c.ToString());
 			}
 			Console.WriteLine("--==End Cookies==--");
+		}
+
+		public void WaitForItemPull(Session sesh)
+		{
+			if(sesh != null && sesh.UpdateTask != null)
+			{
+				sesh.UpdateTask.Wait();
+			}
 		}
 
 		public byte[] HttpFunction(HttpListenerContext hlc)

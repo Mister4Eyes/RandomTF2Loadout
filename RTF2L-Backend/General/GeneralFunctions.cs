@@ -78,8 +78,7 @@ namespace RandomTF2Loadout.General
 					return false;
 				}
 			}
-
-			//Nothing failed, therefor they are the same.
+			
 			return true;
 		}
 
