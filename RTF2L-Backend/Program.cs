@@ -247,6 +247,8 @@ namespace RandomTF2Loadout
 					return sesh.playerName;
 				case "SteamID64":
 					return sesh.steamID64;
+				case "SelectClass":
+					return sesh.SelectClass.ToString();
 				default:
 					return "";
 			}
@@ -569,8 +571,27 @@ namespace RandomTF2Loadout
 			{
 				hlc.Response.Cookies = currSession.cookies;
 			}
+			else if(GeneralFunctions.CookieCollectionHasValue("SteamID", hlc.Request.Cookies))
+			{
+				currSession = new Session(sid, hlc.Request.Cookies);
 
+				WaitForItemPull(currSession);
 
+				//Sanity check due to how cookies can be edited.
+				if (currSession.inventoryPulled)
+				{
+					lock (ids)
+					{
+						//Was checked earlier so there is no way there can be a null SID.
+						ids.Add(sid.GetHashCode());
+					}
+					lock (sessions)
+					{
+						sessions.Add(currSession);
+					}
+				}
+				else { currSession = null; }
+			}
 			switch (hlc.Request.HttpMethod)
 			{
 				case "GET":

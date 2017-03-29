@@ -126,9 +126,9 @@ namespace RandomTF2Loadout.WebServer
 			{
 				cookies.Add(new Cookie("ID", sid.GetHashCode().ToString()));
 			}
-			if(cookies["steamdID"] != null)
+			if(cookies["SteamID"] != null)
 			{
-				TrySetSteamID64(cookies["steamID"].Value);
+				TrySetSteamID64(cookies["SteamID"].Value);
 			}
 		}
 

@@ -17,6 +17,7 @@ namespace RandomTF2Loadout.General
 			Cookie c;//Not used
 			return TryGetCookieValue(value, cc, out c);
 		}
+
 		public static bool TryGetCookieValue(string value, CookieCollection cookieCollection, out Cookie cookie)
 		{
 			cookie = null;
@@ -30,6 +31,7 @@ namespace RandomTF2Loadout.General
 			}
 			return false;
 		}
+
 		public static void InitializeItems(Item i, Dictionary<string, List<Item>> tempClassItems)
 		{
 			foreach (string str in i.used_by_classes)
