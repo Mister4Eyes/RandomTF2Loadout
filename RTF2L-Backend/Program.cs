@@ -458,7 +458,7 @@ namespace RandomTF2Loadout
 							lock (sessions)
 							{
 								sessions.Remove(session);
-								hlc.Response.Cookies = new CookieCollection();//Clears the cookies.
+								hlc.Response.Cookies["SteamID"].Value = "";
 
 								//Just in case any more comes in requiring a session to be active.
 								session = null;
