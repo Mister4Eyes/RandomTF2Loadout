@@ -34,14 +34,24 @@ namespace RandomTF2Loadout.General
 
 		public static void InitializeItems(Item i, Dictionary<string, List<Item>> tempClassItems)
 		{
+
 			foreach (string str in i.used_by_classes)
 			{
 				Item changeITM = i;
+
+				#region Slot Problem Solvers
 				if (changeITM.name.Equals("The B.A.S.E. Jumper") && str.Equals("Demoman"))
 				{
 					changeITM = new Item(i);
 					changeITM.item_slot = "primary";
 				}
+				if (changeITM.name.Contains("Shotgun") && !str.Equals("Engineer"))
+				{
+					changeITM = new Item(i);
+					changeITM.item_slot = "secondary";
+				}
+				#endregion
+
 				tempClassItems[str].Add(changeITM);
 			}
 		}
