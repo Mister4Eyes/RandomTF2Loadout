@@ -726,7 +726,7 @@ namespace RandomTF2Loadout
 				}
 			}
 
-			WebServer.WebServer ws = new WebServer.WebServer(GeneralFunctions.ParseConfigFile("URIs").Split(','), HttpFunction);
+			WebServer.WebServer ws = new WebServer.WebServer(GeneralFunctions.ParseConfigFile("URIs").Split(' '), HttpFunction, DevMode);
 
 			//Startup
 			ws.Run();
@@ -744,8 +744,8 @@ namespace RandomTF2Loadout
 			ws.Stop();
 			running = false;
 
-			//Wait for this to stop
-			while (!upSess.IsCompleted) ;
+			//Wait for update thread to stop
+			upSess.Wait();
 		}
 		//*/
 	}
