@@ -36,26 +36,26 @@
 	width: 50%;
 }
 #weapons{
-	margin-right:4px;
+	margin-top:10px;
 	position:relative;
-	right:35%;
-	height:200px;
-	width:200px;
+	height:30%;
+	width:250px;
 	border-radius:10px;
 	border-style:solid;
-	border-width:2px;
+	border-width:3px;
 	border-color:#81776E;
-    transform: translate(-10%, 0%);
-}
-hr{
-	border-color:red;
+	right:35%;
+	text-align:center;
 }
 .character{
 	margin:0 auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position:absolute;
+    top:500px;
+    left:40%;
+	text-align:center;
+}
+hr{
+	border-color:red;
 }
 footer{
 	height:60px;
