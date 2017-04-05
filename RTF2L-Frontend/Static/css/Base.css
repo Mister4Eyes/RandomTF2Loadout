@@ -31,10 +31,6 @@
 #background{
 	background-color:#A5A19D;
 }
-#theImage{
-	height:50%;
-	width: 50%;
-}
 #weapons{
 	margin-top:10px;
 	position:relative;
@@ -53,6 +49,10 @@
     top:500px;
     left:40%;
 	text-align:center;
+}
+@media (mi)
+.desktop{
+	
 }
 hr{
 	border-color:red;
