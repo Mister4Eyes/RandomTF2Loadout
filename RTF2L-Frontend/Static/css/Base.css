@@ -47,12 +47,8 @@
 	margin:0 auto;
     position:absolute;
     top:500px;
-    left:40%;
+    left:50%;
 	text-align:center;
-}
-@media (mi)
-.desktop{
-	
 }
 hr{
 	border-color:red;

@@ -3,6 +3,11 @@
 	<h6 onclick="playSound(); pauseAnthem();" style="color:#282828;" class="noselect">CHEEKI BREEKI</h6>
 </div>
 <div class="panel col-sm-8" align="center" id="background">
+	#if  HasSession
+	<form method="post" align="right">
+		<button name="StopSession" class="btn btn-primary">LogOff</button>
+	</form>
+	#endif
 	<h1>Random TF2 Loadouts</h1>
 	<!--<div align="center" class="panel panel-heading" id="header">
 		<a href="">
@@ -17,6 +22,7 @@
 		</a>
 	</div>-->
 	<br>
+	
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#"><h5>Loadout</h5></a></li>
 				<li><a href="class"><h5>Classes</h5></a></li>
@@ -33,9 +39,6 @@
 			<span class="glyphicon glyphicon-chevron-right"></span><span class="glyphicon glyphicon-chevron-right"></span>
 		</div>
 		<hr>
-		<div class="hidden-sm-up">
-			<p>TEST</p>
-		</div>
 		{ItemView}
 		#else
 		<h2>Please enter your Steam ID64</h2>
@@ -44,9 +47,9 @@
 	<footer>
 		<span>
 			#if HasSession
-			<h5>Becky, lemme smash&trade; &#0169 2016</h5>
+			<h5>Becky, lemme smash&trade; &#0169 2017</h5>
 			#else
-			<h5>Buildexboy&trade; &#0169 2016</h5>
+			<h5>Buildexboy&trade; &#0169 2017</h5>
 			#endif
 		</span>
 	</footer>
