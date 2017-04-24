@@ -46,8 +46,8 @@
 .character{
 	margin:0 auto;
     position:absolute;
-    top:500px;
-    left:50%;
+    top:400px;
+    left:38%;
 	text-align:center;
 }
 hr{
@@ -55,9 +55,14 @@ hr{
 }
 footer{
 	height:60px;
-	line-height: 90px;
+	line-height:90px;
 	background-color:#CFCAC5;
 	text-align:center;
+}
+.link,.link:hover{
+	color:inherit;
+	text-decoration:none;
+	cursor:pointer;
 }
 span {
   display: inline-block;

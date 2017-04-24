@@ -3,11 +3,6 @@
 	<h6 onclick="playSound(); pauseAnthem();" style="color:#282828;" class="noselect">CHEEKI BREEKI</h6>
 </div>
 <div class="panel col-sm-8" align="center" id="background">
-	#if  HasSession
-	<form method="post" align="right">
-		<button name="StopSession" class="btn btn-primary">LogOff</button>
-	</form>
-	#endif
 	<h1>Random TF2 Loadouts</h1>
 	<!--<div align="center" class="panel panel-heading" id="header">
 		<a href="">
@@ -23,10 +18,10 @@
 	</div>-->
 	<br>
 	
-			<ul class="nav nav-tabs">
-				<li class="active"><a href="#"><h5>Loadout</h5></a></li>
-				<li><a href="class"><h5>Classes</h5></a></li>
-			</ul>
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#"><h5>Loadout</h5></a></li>
+			<li><a href="class" class="link"><h5>Classes</h5></a></li>
+		</ul>
 	<div class="panel panel-body rounded" id="body">
 		<!-- Gui? goes here --->
 		{forms}
@@ -37,6 +32,9 @@
 		<h1>Your Loadout</h1>
 		<div align="left">
 			<span class="glyphicon glyphicon-chevron-right"></span><span class="glyphicon glyphicon-chevron-right"></span>
+			<form method="post">
+				<button name="StopSession" class="btn">Logout</button>
+			</form>
 		</div>
 		<hr>
 		{ItemView}
@@ -47,7 +45,9 @@
 	<footer>
 		<span>
 			#if HasSession
-			<h5>Becky, lemme smash&trade; &#0169 2017</h5>
+			<a onclick="javascript: window.location = 'https://i.ytimg.com/vi/H76GMfPv8Mk/maxresdefault.jpg';" class="link">
+				<h5>Musical.ly&trade; &#0169 2017</h5>
+			</a>
 			#else
 			<h5>Buildexboy&trade; &#0169 2017</h5>
 			#endif
